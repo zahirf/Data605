@@ -1,0 +1,64 @@
+---
+title: "605 Discussion01"
+author: "Farhana Zahir"
+date: "1/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Matrix Multiplication Ex C26, page 191, A first Course in Linear Algebra, Beezer
+
+### Question: Compute the product AB of the two matrices below using Matrix Multiplication(MM)
+
+### Constructing the matrix
+```{r}
+A<-matrix(c(1,3,1,0,1,0,1,1,2),nrow=3,byrow=TRUE)
+A
+B<-matrix(c(2,-5,-1,0,1,0,-1,2,1),nrow=3,byrow=TRUE)
+B
+```
+
+### MM(Matrix Multiplication)
+
+```{r}
+C<-A%*%B
+C
+```
+
+As we can see this results in an identity matrix
+
+We know that A*AInverse will lead to an identity matrix
+Let us test if B is inverse of A
+
+```{r}
+print(solve(A))
+```
+
+This is exactly the matrix B
+
+## Matrix multiplication without using R
+
+Let us look at the step by step multiplication process
+We will name variables according to row and column numbers (for example C11=row1column1 of matrixC)
+
+```{r}
+C11<-A[1,1]*B[1,1]+A[1,2]*B[2,1]+A[1,3]*B[3,1]
+C21<-A[2,1]*B[1,1]+A[2,2]*B[2,1]+A[2,3]*B[3,1]
+C31<-A[3,1]*B[1,1]+A[3,2]*B[2,1]+A[3,3]*B[3,1]
+
+C12<-A[1,1]*B[1,2]+A[1,2]*B[2,2]+A[1,3]*B[3,2]
+C22<-A[2,1]*B[1,2]+A[2,2]*B[2,2]+A[2,3]*B[3,2]
+C32<-A[3,1]*B[1,2]+A[3,2]*B[2,2]+A[3,3]*B[3,2]
+  
+C13<-A[1,1]*B[1,3]+A[1,2]*B[2,3]+A[1,3]*B[3,3]
+C23<-A[2,1]*B[1,3]+A[2,2]*B[2,3]+A[2,3]*B[3,3]
+C33<-A[3,1]*B[1,3]+A[3,2]*B[2,3]+A[3,3]*B[3,3]
+
+M<-matrix(c(C11,C21,C31,C12,C22,C32,C13,C23,C33), nrow=3, byrow=TRUE)
+M
+```
+
+This gives thesame result as using R.
