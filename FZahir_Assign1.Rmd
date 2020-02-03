@@ -1,0 +1,162 @@
+---
+title: "605HW1"
+author: "Farhana Zahir"
+date: "2/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 01
+
+### (1) Calculate the dot product u:v where u = [0.5;0.5] and v= [3;-4]
+
+```{r}
+u <- c(0.5,0.5)
+v <- c(3,-4)
+
+##Dot product without using R function
+dotprod<-u[1]*v[1]+u[2]*v[2]
+dotprod
+
+##Dot product using R function
+library('pracma')
+dotprod1<-dot(u,v)
+dotprod1
+```
+
+### (2) What are the lengths of u and v?
+
+```{r}
+##Length u
+len_u<-sqrt(u[1]^2+u[2]^2)
+len_v<-sqrt(v[1]^2+v[2]^2)
+len_u
+len_v
+```
+
+### (3) What is the linear combination 3u-2v?
+
+```{r}
+lin_comb<-3*u-2*v
+lin_comb
+```
+
+### (4) What is the angle between u and v?
+
+```{r}
+##The angle is Cosinv(dotprod/len_u*len_v)
+angle_rad<-acos(dotprod/(len_u*len_v))
+angle_degree<-angle_rad*180/pi
+##Angle in degrees is 98.13
+angle_degree
+```
+
+## Problem 02
+
+### Write a function in R that takes matrix A and constraint vector b and solve using upper triangle and backtesting
+
+```{r}
+matsolv<-function(A,b){
+  
+  cmat<-cbind(A,b)##Bind A and b
+  
+  ## Check for 0 in top left pivot
+  if(cmat[1,1]==0){
+    ##Check if cmat1[2,2]is non zero
+    if(cmat[2,1]!=0){
+      cmat = cmat[c(2,1,3),]
+    } ##Switch R1 with R2
+    else{
+      cmat=cmat(c(3,2,1)) ##Switch R1 with R3
+    }
+  }
+
+  ## Check if row1 col1 has 1, else divide by first element to get 1
+  if (cmat[1,1] != 1) {
+    cmat[1,] <- cmat[1,] / cmat[1,1]
+  }
+
+  ## Convert item [2,1] to 0
+  if (cmat[2,1] !=0) {
+    # Multiply it by each item in R1 and then adjust to make [2,1] to 0
+    adjustment <- cmat[2,1] * cmat[1,]
+    cmat[2,] <- cmat[2,] - adjustment
+  }
+
+  ## Convert item [3,1] to 0
+  if (cmat[3,1] !=0) {
+    # use value of row 3 column 1 and multiply by 1, then deduct to make [3,1] to 0
+    adjustment <- cmat[3,1] * cmat[1,]
+    cmat[3,] <- cmat[3,] - adjustment
+  }
+
+  ## Check if row2col2 is 0, if yes, switch with row 3 to get non zero, divide by [2,2] to get 1
+  if (cmat[2,2] == 0) {
+    cmat = cmat[c(1,3,2),]
+  } 
+  cmat[2,] <- cmat[2,] / cmat[2,2]
+
+  ## Convert [3,2] to 0
+  adjustment <- cmat[3,2] * cmat[2,]
+  cmat[3,] <- cmat[3,] - adjustment
+
+  ##Solve with back substitution
+  x3<- cmat[3,4]/cmat[3,3]
+  x2<- -cmat[2,3]
+  x1<- 1-x2-3*x3
+
+  ##Return the result vector
+  result <- as.vector(round(c(x1,x2,x3), digits=2))
+  return(result)
+}
+
+##Testing with R function
+A <- matrix(c(1,1,3,2,-1,5,-1,-2,4), ncol=3, byrow=TRUE)
+b <- c(1,2,6)
+matsolv(A,b)
+  
+```  
+  
+### Write a function in R that takes matrix A and constraint vector b and solve using Gauss Jordan elimination
+  
+```{r}  
+
+matsolv1<-function(A,b){
+  
+  mat1<-cbind(A,b)##Bind the two to make augmented matrix
+  
+  ##Transform R2=-2R1+R2
+  mat1[2,]<- -2*mat1[1,]+mat1[2,]
+  
+  ##Transform R3=R1+R3
+  mat1[3,]<- mat1[1,]+mat1[3,]
+  
+  ##Transform R1=R1+R3
+  mat1[1,]<- mat1[1,]+mat1[3,]
+  
+  ##Transform R2=-3R3+R2
+  mat1[2,]<- -3*mat1[3,]+mat1[2,]
+  
+  ##Substitution
+  x3<- mat1[2,4]/mat1[2,3]
+  x1<- mat1[1,4]-10*x3
+  x2<- -1*(7-7*x3)
+
+  
+  ##Return the result vector
+  result <- as.vector(round(c(x1,x2,x3), digits=2))
+  
+  return(result)
+}
+
+##Testing with R function
+A <- matrix(c(1,1,3,2,-1,5,-1,-2,4), ncol=3, byrow=TRUE)
+b <- c(1,2,6)
+matsolv1(A,b)
+```
+
+
+
