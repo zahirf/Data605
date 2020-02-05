@@ -1,0 +1,67 @@
+---
+title: "Discussion2"
+author: "Farhana Zahir"
+date: "2/5/2020"
+output: 
+   html_document:
+    toc:   true
+    toc_float:  true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Ex C25 Pg 353 
+
+Calculating determinant of a 3 X 3 matrix
+
+Doing the computations by hand, find the determinant of the matrix below:
+
+```{r}
+mat = matrix(c (3,-1,4,2,5,1,2,0,6), ncol=3 , nrow=3, byrow=TRUE)
+mat
+```
+
+Steps to calculate the determinant of the 3 X 3 matrix
+
+```{r}
+determinant<-3*(5*6-0*1)-(-1)*(2*6-1*2)+4*(2*0-2*5)
+determinant
+```
+
+Verify using the R function det
+
+```{r}
+print(det(mat))
+```
+
+### Ex C26 pg 353
+
+Calculating the determinant of a 4 X 4 matrix
+
+```{r}
+mat1 = matrix(c (2,0,3,2,5,1,2,4,3,0,1,2,5,3,2,1), ncol=4 , nrow=4, byrow=TRUE)
+mat1
+```
+
+Steps to calculate the detereminant
+
+```{r}
+#Break up the matrix to calculate determinants
+#With reference to mat[1,1]
+mat1_1<-matrix(c (1,2,4,0,1,2,3,2,1), ncol=3 , byrow=TRUE)
+#With reference to mat[1,2]
+mat1_2<-matrix(c (5,2,4,3,1,2,5,2,1), ncol=3 , byrow=TRUE)
+#Similarly
+mat1_3<-matrix(c (5,1,4,3,0,2,5,3,1), ncol=3 , byrow=TRUE)
+mat1_4<-matrix(c (5,1,2,3,0,1,5,3,2), ncol=3 , byrow=TRUE)
+determinant_mat1<-2*det(mat1_1)-0*(det(mat1_2))+3*(det(mat1_3))-2*(det(mat1_4))
+determinant_mat1
+```
+
+Verify using R
+
+```{r}
+print(det(mat1))
+```
