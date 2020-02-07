@@ -1,0 +1,48 @@
+---
+title: "FzahirDiscussionResponse2"
+author: "Farhana Zahir"
+date: "2/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Constructing the matrix and calculating determinant
+```{r}
+A <- matrix(c(1, 2, 1, 2, 0, 1, 2, 3, 7/4), nrow=3, byrow=T)
+A
+print(det(A))
+```
+
+Trying to find inverse using solve
+```{r eval=FALSE}
+print(solve(A))
+##Error: Lapack routine dgesv: system is exactly singular: U[3,3] = 0
+```
+
+Using Ginv from matlib to solve for generalized inverse
+
+```{r}
+library('matlib')
+Ainv<-Ginv(A)
+Ainv
+```
+
+Test A*Ainverse*A to see if it returns the original matrix
+
+```{r{}}
+test<-A%*%Ainv%*%A
+test
+```
+
+However the generalised Moore-Penrose does not return an identity matrix when I multiply A*Ainverse
+
+```{r}
+identity<-A%*%Ainv
+identity
+```
+
+For more on Ginv, visit https://cran.r-project.org/web/packages/matlib/vignettes/ginv.html
+
