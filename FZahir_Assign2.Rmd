@@ -1,0 +1,148 @@
+---
+title: "FZahir_Assignment02"
+author: "Farhana Zahir"
+date: "2/09/2020"
+output: 
+  html_document:
+    toc:   true
+    toc_float:  true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem Set 1
+
+1) Show that ATA!=AAT in general. (Proof and demonstration)
+
+```{r}
+#Let us take a 4X3 matrix mat1
+mat1<-matrix(1:12,nrow=4, byrow=T)
+mat1
+#Calculate the transpose of mat1, this is a 3X4 matrix
+mat1_transpose<-t(mat1)
+mat1_transpose
+#mutiply mat1 with mat1_transpose
+AAT<-mat1%*%mat1_transpose
+AAT
+#This is a 4X4 matrix
+ATA<-mat1_transpose%*%mat1
+ATA
+#this is a 3X3 matrix, so AAT is not equal to ATA
+```
+
+2) For a special type of square matrix A, we get ATA==AAT. Under what conditions could this be true?
+
+Let us verify if this is true for a 5X5 identity matrix
+
+```{r}
+#Construct the identity matrix
+Idmat<-diag(5)
+Idmat
+#Transpose the matrix
+IdmatT<-t(Idmat)
+AAT1<-Idmat%*%IdmatT
+ATA1<-IdmatT%*%Idmat
+AAT1==ATA1
+#The two are equal, so the conditions are true in case of identity matrices
+```
+
+Let us test if this is true for a scalar multiplication of an indentity matrix
+
+```{r}
+Idmat1<-5*Idmat
+#Using the same steps as above
+Idmat1_T<-t(Idmat)
+AAT<-Idmat1%*%Idmat1_T
+ATA<-Idmat1_T%*%Idmat1
+AAT==ATA
+#So this works for scalar multiples of identity matrices also
+```
+
+Let us test for any square matrix
+```{r}
+sqmat<-matrix(1:9, nrow=3, byrow=T)
+sqmat_t<-t(sqmat)
+AAT<-sqmat%*%sqmat_t
+ATA<-sqmat_t%*%sqmat
+AAT==ATA
+det(AAT)
+det(ATA)
+#This does not work for just any square matrix
+```
+
+What about the case of a symmetric matrix (square matrix where a=atranspose)
+```{r}
+symmat<-matrix(c(1,7,3,7,4,-5,3,-5,6), nrow=3, byrow=T)
+symmat_t<-t(symmat)
+symmat==symmat_t
+AAT<-symmat%*%symmat_t
+ATA<-symmat_t%*%symmat
+AAT==ATA
+#This works for symmetric matrices
+```
+
+Lastly we will test a skew symmetric matrix, a square matrix whose ranspose equals to its negative
+
+```{r}
+skewmat<-matrix(c(0,2,-45,-2,0,-4,45,4,0), nrow=3, byrow=T)
+skewmat_t<-t(skewmat)
+AAT<-skewmat%*%skewmat_t
+ATA<-skewmat_t%*%skewmat
+AAT==ATA
+#This also works for skew symmetric matrices
+```
+
+So we can see that AAT=ATA for all orthogonal, symmetric and skew symmetric matrices. For reference, go to https://en.wikipedia.org/wiki/Normal_matrix
+
+
+## Problem Set 2
+
+Write an R function to factorize a square matrix A into LU 
+
+Creating the function
+
+```{r}
+LU<-function(mat){
+  Lower<-diag(nrow(mat))#start with an identity matrix for lower
+  Upper<-mat #upper is built from original matrix using Gaussian elimination
+  
+  for (c in 1:(nrow(mat) - 1)) { #Iteration stops on row before last
+    for (r in (c+1):nrow(mat)) { #Second loop is 1+first, ends in last row
+      if(Upper[r,r] != 0)
+      Lower[r,c] <- Upper[r,c]/Upper[c,c]
+      Upper[r,] <- Upper[r,] - (Upper[c,] * (Upper[r,c]/Upper[c,c]))
+  }
+}
+
+  LU<-list("L"=Lower, "U"=Upper)
+  return(LU)
+}
+
+#Help sought from https://rpubs.com/santoshmanjrekar/418200
+```
+
+Testing with a 3X3 matrix
+
+```{r}
+A<-matrix(1:9, nrow=3, byrow=T)
+LUdecomposed<-LU(A)
+#Multiply upper and lower matrix
+product<-LUdecomposed$L%*%LUdecomposed$U
+product==A
+##This equals the original 3X3 matrix A
+```
+
+Testing with a 4X4 matrix
+
+```{r}
+B<-matrix(c(1, 2, -1, -2, 8, 6, -1, -2, 3,-1, -2, 4,5,2,4,1), nrow=4, byrow=T)
+LUdecomposed1<-LU(B)
+#Multiply upper and lower matrix
+product1<-LUdecomposed1$L%*%LUdecomposed1$U
+product1==B
+#This equals the original 4X4 matrix B
+```
+
+
