@@ -1,0 +1,64 @@
+---
+title: "Discussion3"
+author: "Farhana Zahir"
+date: "2/12/2020"
+output: 
+   html_document:
+    toc:   true
+    toc_float:  true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Problem C10 page 388
+
+Find the charactertistic polynomial of the matrix 
+
+```{r load-packages, warning = FALSE}
+library(knitr)
+library(pracma)
+```
+
+```{r matrix}
+A = matrix(c (1,2,3,4), nrow=2, byrow=T)
+print(A)
+```
+
+## Solution using R
+
+```{r}
+charpoly(A)
+```
+
+This gives us the characteristic polynomial as below:
+
+$${ PA(x)=λ}^{ 2 }-5{ λ } -2$$
+
+## Solution without using charpoly
+
+We will find the characteristic polynomial of a 2X2 matrix
+
+$$A=\begin{vmatrix} 1 & 2 \\ 3 & 4\end{vmatrix}$$
+
+We must solve the following to get eigenvalues
+
+$$det(\begin{vmatrix} λ & 0 \\ 0 & λ \end{vmatrix}-\begin{vmatrix} 1 & 2\\ 3 & 4\end{vmatrix})\ =0$$
+
+Subtracting gives us
+
+$$det(\begin{vmatrix} λ-1 & -2 \\ -3 & λ-4\end{vmatrix})= 0$$
+
+Next step is to solve for the determinant using det(A)=ad-bc
+
+$$(λ-1)(λ-4)- (-3)(-2)=0$$
+
+$$λ(λ-4)-1(λ-4)-6=0$$
+$$λ^2-4λ-λ+4-6=0$$
+$$λ^2-5λ-2=0$$
+
+This is the same equation as the one given by the coordinated from charpoly function.
+
+
+
