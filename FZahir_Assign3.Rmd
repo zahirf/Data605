@@ -1,0 +1,170 @@
+---
+title: "FZahir_Assignment03"
+author: "Farhana Zahir"
+date: "2/16/2020"
+output: 
+  html_document:
+    toc:   true
+    toc_float:  true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem Set 1
+
+### Question 1 
+
+What is the rank of the matrix A?
+
+$$A=\begin{vmatrix} 1 & 2 & 3& 4 \\ -1 & 0 & 1 & 3\\ 0&1&-2&1\\5&4&-2&3\end{vmatrix}$$
+
+The rank of a matrix is defined as the number of linearly independent rows or linearly independent columns in a matrix A. The process for computing the rank involves translating a matrix into echelon form.
+
+We will use the library pracma to reduce the matrix to echelon form. After reduction, we see that the rank of matrix A is 4 since there are 4 non zero linearly independent rows
+
+```{r}
+library(pracma)
+A <- matrix(c(1,-1,0,5,2,0,1,4,3,1,-2,-2,4,3,1,-3), nrow = 4,ncol = 4)
+rref(A)
+```
+
+Let us verify using built in R commands
+
+```{r}
+print(qr(A)$rank)
+```
+
+
+### Question 2 
+
+Given an mxn matrix where m > n, what can be the maximum rank? The minimum rank, assuming that the matrix is non-zero?
+
+Maximum rank
+
+The maximum rank can be full rank with  leading entry of 1 in each column in row echelon form, and n is the number of columns. So the maximum rank can be n. The matrix A above is a matrix with full rank.
+
+https://www.youtube.com/watch?v=HZy-sFsCCxI
+
+Minimum rank
+
+The minimum rank is 1 assuming the matrix in non zero. This can happen when the rest of the rows are linearly dependant. The matrix X below is such a matrix.
+
+```{r}
+X<-matrix(c(1,2,3,4,2,4,6,8,3,6,9,12), nrow=3, byrow=T)
+X
+print("The rank of this matrix is")
+print(qr(X)$rank)
+```
+
+### Question 3
+
+What is the rank of matrix B?
+
+```{r}
+B <- matrix(c(1,3,2,2,6,4,1,3,2), nrow = 3,ncol = 3)
+B
+```
+
+The rows are linearly dependant, so it can be easily guessed that the rank is 1. Let us test using R
+
+```{r}
+print(rref(B))
+
+print(qr(B)$rank)
+```
+
+## Problem Set 2
+
+Compute the Eigenvalues and Eigenvectors of matrix A. You’ll need to show your work. You’ll need to write the characteristic polynomial and show your solution.
+
+```{r}
+A <- matrix(c(1,0,0,2,4,0,3,5,6), nrow = 3, ncol = 3)
+A
+```
+
+The matrix A is in the form of an upper triangular matrix.
+
+The determinant is therefore 1*4*6 which is equal to 24. Let us verify
+
+```{r}
+print(det(A))
+```
+det(A-λI)=0
+
+$$det(\begin{vmatrix} 1-λ & 2 & 3\\ 0 & 4-λ & 5\\ 0 &0 & 6-λ\end{vmatrix})=0$$
+
+The characteristic polynomial is therefore
+
+$$(1-λ)(4-λ)(6-λ)=0$$
+
+The eigenvalues are λ=1, λ=4, λ=6
+
+Let us confirm using R
+
+```{r}
+e<-eigen(A)
+e$values
+```
+
+For eigenvectors, we have to solve (A-λnI)Xn=0
+
+When λ=1
+
+```{r}
+a1<-matrix(c(0,0,0,2,3,0,3,5,5), nrow =3, byrow=F)
+print("the matrix is")
+a1
+print("Reduced form")
+print(rref(a1))
+```
+
+$$\begin{vmatrix} 0 & 1 & 0\\ 0 & 0 & 1\\ 0 &0 & 0\end{vmatrix} \begin{vmatrix}X1\\X2\\X3\end{vmatrix} = \begin{vmatrix}0\\0\\0\end{vmatrix}$$
+
+X1 is free, X2=0, X3=0 so the eigenvector for λ=1 is 
+$$X1=\begin{vmatrix}1\\0\\0\end{vmatrix}$$
+
+When λ=4,
+
+```{r}
+a2<-matrix(c(-3,0,0,2,0,0,3,5,2), nrow =3, byrow=F)
+print("the matrix is")
+a2
+print("Reduced form")
+print(rref(a2))
+```
+
+Keeping X2 free, X3=0, X1-0.6667X2=0, so the eigenvector for λ=4 is
+
+$$X2=\begin{vmatrix}1\\3/2\\0\end{vmatrix}$$
+
+Similarly for λ=4
+
+```{r}
+a3 <- matrix(c(-5,0,0,2,-2,0,3,5,0), nrow =3, byrow=F)
+print("the matrix is")
+a3
+print("Reduced form")
+print(rref(a3))
+```
+
+
+X3 is free, X1-1.6X3=0, X2-2.5X3=0
+X1=1.6, X2=2.5, so the eigenvector for λ=6 is
+
+$$X3=\begin{vmatrix}1.6\\2.5\\1\end{vmatrix}$$
+
+Let us check using R, 
+
+```{r}
+print(eigen(A))
+```
+
+If we consider X3[3,1]=1, X3[1,1]=0.510/0,319 = 1.6
+similarly, X3[2,1] becomes 2.5, so my solution looks ok.
+
+```{r}
+print(0.5108407/0.3192754)
+print(0.7981886/0.3192754)
+```
