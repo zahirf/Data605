@@ -1,0 +1,46 @@
+---
+title: "Discussion4"
+author: "Farhana Zahir"
+date: "2/19/2020"
+output: 
+   html_document:
+    toc:   true
+    toc_float:  true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Problem C25 page 443
+
+Define the linear transformation 
+
+$$T:\mathbb{C}^3 \rightarrow \mathbb{C}^2, T \bigg(\begin{vmatrix}x_1\\x_2\\x_3\end{vmatrix}\bigg)=\begin{vmatrix} 2x_1-x_2+5x_3 \\ -4x_1+2x_2-10x_3\end{vmatrix}$$ 
+
+Verify that T is a linear transformation
+
+Solution:
+
+If T is a linear transformation and a and b are vectors and c is a scaler, then the following should be true
+
+1) T(a+b)=T(a)+T(b)
+2) T(ca)=cT(a)
+
+Proving number 1
+
+$$a+b=\begin{vmatrix}a_1+b_1\\a_2+b_2\\a_3+b_3\end{vmatrix}$$
+$$T(a+b)=\begin{vmatrix}2a_1+2b_1-a_2-b_2+5a_3+5b_3\\-4a_1-4b_1+2a_2+2b_2-10a_3-10b_3\end{vmatrix}$$
+
+$$T(a)=\begin{vmatrix}2a_1-a_2+5a_3\\-4a_1+2a_2-10a_3\end{vmatrix}$$
+$$T(b)=\begin{vmatrix}2b_1-b_2+5b_3\\-4b_1+2b_2-10b_3\end{vmatrix}$$
+
+$$T(a)+T(b)=T(a+b)=\begin{vmatrix}2a_1+2b_1-a_2-b_2+5a_3+5b_3\\-4a_1-4b_1+2a_2+2b_2-10a_3-10b_3\end{vmatrix}$$
+
+Proving number 2
+
+$$ca=\begin{vmatrix}ca_1\\ca_2\\ca_3\end{vmatrix}$$
+
+$$T(ca)=\begin{vmatrix}2ca_1-ca_2+5ca_3\\-4ca_1+2ca_2-10ca_3\end{vmatrix}$$
+$$T(ca)=c\begin{vmatrix}2a_1-a_2+5a_3\\-4a_1+2a_2-10a_3\end{vmatrix}=cT(a)$$
+The above transformations satisfy both point 1 and point 2 and proves that T is a linear transformation.
