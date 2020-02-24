@@ -1,0 +1,139 @@
+---
+title: "FZahir_Assignment04"
+author: "Farhana Zahir"
+date: "2/23/2020"
+output: 
+  html_document:
+    toc:   true
+    toc_float:  true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem Set 1
+
+Verify using R that SVD and Eigenvalues are related
+
+```{r}
+A <- matrix(c(1,2,3, -1, 0, 4), nrow = 2, ncol = 3, byrow = TRUE)
+```
+
+Compute the left-singular, singular values, and right-singular vectors of A using the svd command.
+
+The vector d contains the singular values
+The matrix u contains the left singular vectors (rows).
+The matrix v contains the right singular vectors (columns).
+
+```{r}
+A_svd <- svd(A, nu=nrow(A), nv=ncol(A))
+singular_values <- as.matrix(diag(A_svd$d, nrow=nrow(A), ncol=ncol(A)))
+left_singluar_vectors <- as.matrix(A_svd$u)
+right_singluar_vectors <- as.matrix(A_svd$v)
+```
+
+Singular values from SVD
+```{r}
+singular_values
+```
+The left singular vectors from SVD function
+
+```{r}
+left_singluar_vectors
+```
+
+The right singular vectors from SVD function
+
+```{r}
+right_singluar_vectors
+```
+
+a) Examine the two sets of singular vectors and show that they are indeed
+eigenvectors of X and Y.
+
+Compare left singular vector by computing AAT and taking its eigenvector:
+
+```{r}
+X <- A %*% t(A)
+X_eigen <- eigen(X) #AAT
+X_left_singluar_vectors <- as.matrix(X_eigen$vectors)
+X_eigenvalues <- X_eigen$values 
+```
+
+let us compare the two
+
+```{r}
+left_singluar_vectors
+X_left_singluar_vectors
+```
+
+The numbers are the same but there are differences in signs. 
+
+The square root of the eigenvalues of X match the singular values of the SVD.
+
+```{r}
+singular_values
+diag(sqrt(X_eigenvalues), nrow=nrow(A), ncol=ncol(A))
+```
+
+Let us now compare right singular vector by computing ATA and taking its eigenvector
+
+```{r}
+Y <- t(A)%*% A #ATA
+Y_eigen <- eigen(Y)
+Y_right_singluar_vectors <- as.matrix(Y_eigen$vectors)
+Y_eigenvalues <- Y_eigen$values
+```
+
+The SVD right singular vectors and ATA eigenvectors match but there are sign differences
+
+```{r}
+right_singluar_vectors
+Y_right_singluar_vectors
+```
+
+The eigenvalues of X and Y match for nonzero values
+
+```{r}
+round(X_eigenvalues,3)
+round(Y_eigenvalues,3)
+```
+
+## Problem Set 2
+
+```{r}
+#The function to get cofactors
+getcofactors <- function(M) {
+  cofactors <- M
+  for(i in 1:nrow(M)){
+    for(j in 1:ncol(M)){
+      cofactors[i,j] <- (det(M[-i,-j])*(-1)^(i+j)) 
+    }
+  }
+  return(cofactors) # output of cofactors matrix
+}
+
+#The function to get the inverse of a square matrix that is invertible
+myinverse <- function(M){
+  M_cofactors <- getcofactors(M)
+  M_cofactors_transpose <- t(M_cofactors)
+  M_det <- det(M)
+  return(M_cofactors_transpose/M_det)
+}
+```
+
+Testing the function
+```{r}
+mat<- matrix(c(4,3,7,8,6,2,2,1,6,1,2,1,2,3,6,7), nrow=4, ncol=4, byrow=TRUE)
+mat
+```
+```{r}
+mat_inverse<-myinverse(mat)
+mat_inverse
+```
+
+Check if mat*mat_inverse=Identity
+```{r}
+print(mat%*%mat_inverse)
+```
