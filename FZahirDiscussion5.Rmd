@@ -1,0 +1,44 @@
+---
+title: "Discussion5"
+author: "Farhana Zahir"
+date: "2/26/2020"
+output: 
+   html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Continuous density functions
+Problem 2 page 71
+
+Suppose you choose a real number X from the interval [2,10] with a density function of the form
+f(x)=Cx where C is a constant
+
+a)Find C.
+b) Find P(E) where E=[a,b] is a subinterval of [2,10].
+c) Find P(X>5) , P(X<7), and P(X2−12X+35>0)
+
+Solution:
+
+a) To find C, we require the probability over the entire sample space to sum to one.
+
+$$\int_{2}^{10} f(x)dx=1$$
+
+$$\int_{2}^{10} C(x)dx=1$$
+$$\int_{2}^{10} C(x)dx=\frac{C}{2}(10^2-2^2)=\frac{C}{2}(100-4)=1$$
+Therefore
+$$C=\frac{2}{96}=\frac{1}{48}$$
+
+b) 
+
+$$P(E)=\int_{a}^{b} f(x)dx=\frac{C}{2}(b^2-a^2)=\frac{1}{96}(b^2-a^2)$$
+
+c) Using the formula in part b
+
+$$P(X>5)=P([5,10])=\frac{1}{96}(100-25)=\frac{75}{96}=\frac{25}{32}$$
+$$P(X<7)=P([2,7])=\frac{1}{96}(49−4)=\frac{45}{96}=\frac{15}{32}$$
+$$P(X^2-12X+35>0)=P((X−7)(X−5)>0)=P(X>7)+P(X<5)=(1−P(X<7))+(1−P(X>5))$$
+
+$$P(X^2-12X+35>0)=(1−\frac{15}{32})+(1−\frac{25}{32})=\frac{24}{32}=34$$
