@@ -1,0 +1,48 @@
+---
+title: "Discussion6"
+author: "Farhana Zahir"
+date: "3/04/2020"
+output: 
+   html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Discrete Conditional Probability
+
+Problem 18 page 152
+
+A doctor assumes that a patient has one of three diseases: $d_{1}$, $d_{2}$, $d_{3}$
+Before any test, he assumes an equal probability of each disease
+He carries out a test that will be positive with probability 0.8 if the patient has $d_{1}$, 0.6 if he has $d_{2}$, and 0.4 if he has $d_{3}$
+Given that the outcome of the test was positive, what probabilities should the doctor now assign to the three possible diseases?
+
+Solution:
+
+First, let's summarize the information that we have. 
+
+We will denote the equal probability of having one of the diseases as p
+
+$P(d_{1}) = p$,
+$P(d_{2}) = p$,
+$P(d_{3}) = p$,
+$P(+|d_{1}) = 0.8$,
+$P(+|d_{2}) = 0.6$,
+$P(+|d_{3}) = 0.4$
+
+From the above we can calculate $P(+)$ as
+
+$$P(+) = P(+|d_{1})P(d_{1}) + P(+|d_{2})P(d_{2}) + P(+|d_{3})P(d_{3}) = p \left ( 0.8 + 0.6 + 0.4\right ) = 1.8p$$
+We need to calculate
+
+$P(d_{1}|+)$,
+$P(d_{2}|+)$,
+$P(d_{3}|+)$
+
+1. $P(d_{1}|+) = \frac{P(d_{1}\cap +)}{P(+)} = \frac{0.8p}{1.8p} = \frac{4}{9}$
+
+2. $P(d_{2}|+) = \frac{P(d_{2}\cap +)}{P(+)} = \frac{0.6p}{1.8p} = \frac{1}{3}$
+
+3. $P(d_{3}|+) = \frac{P(d_{3}\cap +)}{P(+)} = \frac{0.4p}{1.8p} = \frac{2}{9}$
