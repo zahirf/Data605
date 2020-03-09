@@ -1,0 +1,263 @@
+---
+title: "FZahir_Assignment05"
+author: "Farhana Zahir"
+date: "3/08/2020"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1
+
+A box contains 54 red marbles, 9 white marbles, and 75 blue marbles. If a marble is randomly selected from the box, what is the probability that it is red or blue? Express your answer as a fraction or a decimal number rounded to four decimal places.
+
+Red: 54
+White: 9
+Blue: 75
+Probability red or blue:
+
+```{r}
+round((54 + 75)/(54 + 9 + 75), 4)
+```
+
+
+# Problem 2
+
+You are going to play mini golf. A ball machine that contains 19 green golf balls, 20 red golf balls, 24 blue golf balls, and 17 yellow golf balls, randomly gives you your ball. What is the probability that you end up with a red golf ball? Express your answer as a simplified fraction or a decimal rounded to four decimal places.
+
+Green: 19
+Red: 20
+Blue: 24
+Yellow: 17
+Probability end up with red golf ball:
+
+```{r}
+round(20/(19 + 20 + 24 + 17), 4) 
+```
+
+# Problem 3
+
+A pizza delivery company classifies its customers by gender and location of residence. The research department has gathered data from a random sample of 1399 customers. The data is summarized in the table below.
+```{r}
+knitr::include_graphics("pic1.png")
+```
+
+What is the probability that a customer is not male or does not live with parents?
+
+Write your answer as a fraction or a decimal number rounded to four decimal places.
+
+Write your answer as a fraction or a decimal number rounded to four decimal places.
+
+Total: 1399
+Females: 228 + 79 + 252 + 97 + 72 = 728
+Not living with parents: 1399 - (215 + 252) = 932
+Females not living with parents: 728 - 252 = 476
+Females + Not living with parents - (Females not living with parents):
+
+
+```{r}
+round((728 + 932 - 476)/ 1399, 4)
+```
+
+
+# Problem 4
+
+Determine if the following events are independent.
+
+Going to the gym. Losing weight.
+
+Answer: A) Dependent B) Independent
+
+Two events are indepedent if either:
+
+both events have positive probabilty and P(A|B)=P(A)andP(B|A)=P(B), or
+at least one of the events has probability 0.
+In other words, given the existence of one event, if the probability of the other event doesn’t change and vice versa, we can conclude that these two events are independent.
+
+
+# Problem 5
+
+A veggie wrap at City Subs is composed of 3 different vegetables and 3 different condiments wrapped up in a tortilla. If there are 8 vegetables, 7 condiments, and 3 types of tortilla available, how many different veggie wraps can be made?
+
+Veggie wrap: 3 different vegetables, 3 different condiments, 1 tortilla
+Veggie selection: 8
+condiment selection: 7
+tortilla selection: 3
+Number of different veggie wraps that can be made:
+
+```{r}
+choose(8,3) * choose(7,3) * choose(3,1)
+```
+
+# Problem 6
+
+Determine if the following events are independent.
+
+Jeff runs out of gas on the way to work. Liz watches the evening news.
+
+Assuming there is no exceptional connections between Jeff and Liz and/or between the two events, these two events should be B) independent.
+
+# Problem 7
+
+The newly elected president needs to decide the remaining 8 spots available in the cabinet he/she is appointing. If there are 14 eligible candidates for these positions (where rank matters), how many different ways can the members of the cabinet be appointed?
+
+```{r}
+permutation <- function(n,r){gamma(n + 1)/gamma(n - r + 1)}
+permutation(14,8) 
+```
+
+# Problem 8
+
+A bag contains 9 red, 4 orange, and 9 green jellybeans.
+
+What is the probability of reaching into the bag and randomly withdrawing 4 jellybeans such that the number of red ones is 0, the number of orange ones is 1, and the number of green ones is 3?
+
+Write your answer as a fraction or a decimal number rounded to four decimal places.
+
+Answer:
+
+Number of red: 9
+Number of orange: 4
+Number of green: 9
+Total: 22
+
+Take 4 jellybeans.
+0 red, 1 orange, 3 green
+
+Calculations:
+
+```{r}
+prob_gggo <- (9/22) * (8/21) * (7/20) * (4/19)
+prob_ggog <- (9/22) * (8/21) * (4/20) * (7/19)
+prob_gogg <- (9/22) * (4/21) * (8/20) * (7/19)
+prob_oggg <- (4/22) * (9/21) * (8/20) * (7/19)
+prob <- prob_gggo + prob_ggog + prob_gogg + prob_oggg
+```
+
+# Problem 9
+
+Evaluate the following expression.
+
+11!/7!
+
+Answer:
+
+11!/7! = (11 x 10 x 9 x 8 x 7 x 6 x 5 x 4 x 3 x 2 x 1) / (7 x 6 x 5 x 4 x 3 x 2 x 1)
+11!/7! = 11 x 10 x 9 x 8
+11!/7! = 7,920
+
+# Problem 10
+
+Describe the complement of the given event.
+
+67% of subscribers to a fitness magazine are over the age of 34.
+
+The complement of the event described above is subscribers to a fitness magazine that are 34 years old or younger. This is (1 - .67 = .33) 33% of the subscribers.
+
+# Problem 11
+
+If you throw exactly three heads in four tosses of a coin you win $97. If not, you pay me $30.
+
+Step 1: Find the expected value of the proposition. Round your answer to two decimal places.
+
+Step 2: If you played this game 559 times how much would you expect to win or lose? (Losses must be entered as negative.)
+
+Calculations step 1:
+
+```{r}
+win <- 97
+p.win <- choose(4,3)/2^4
+lose <- -30 
+p.lose <- 1 - p.win
+
+expected.toss <- win*p.win + lose*p.lose
+round(expected.toss,2)
+```
+
+step 2:
+
+```{r}
+expected_559times <- expected.toss*559
+expected_559times
+```
+
+# Problem 12
+
+Flip a coin 9 times. If you get 4 tails or less, I will pay you $23. Otherwise you pay me $26.
+
+Step 1: Find the expected value of the proposition. Round your answer to two decimal places.
+
+Step 2: If you played this game 994 times how much would you expect to win or lose? (Losses must be entered as negative.)
+
+Calculations for step 1:
+
+```{r}
+win <- 23 #calculate
+p_win <- sum(choose(9,4),choose(9,3),choose(9,2),choose(9,1),choose(9,0))/2^9
+lose <- -26
+p_lose <- 1 - p.win
+expected_flip <- win*p_win + lose*p_lose
+round(expected_flip,2)
+```
+
+step 2:
+
+```{r}
+expected_994 <- expected_flip*994
+expected_994
+```
+
+# Problem 13
+
+The sensitivity and specificity of the polygraph has been a subject of study and debate for years.
+
+A 2001 study of the use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that the probability of detecting a “truth teller” was .90 (specificity).
+
+We estimate that about 20% of individuals selected for the screening polygraph will lie.
+
+Solution:
+
+P(liar) = .20
+P(truth teller) = .80
+
+P(detect lie | told lie) = .59
+P(detect lie | told the truth) = (1-.59) = ,41
+P(detect truth | told lie) = (1-.90) = .10
+P(detect truth | told the truth) = .90
+
+P(detect lie) = P(detect lie| told lie) P(liar) + P(detect lie| told the truth) P(truth teller)
+P(detect lie) = .59(.20) + .41(.80)
+P(detect lie) = .45
+
+P(detect truth) = P(detect truth | told lie) P(liar) + P(detect truth | told the truth) P(truth teller)
+P(detect truth) = .10 (.20) + .90(.80)
+P(detect truth) = .74
+
+
+a) What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.)
+
+P(liar | detect liar) = P(detect lie | told lie) P(liar) / P(detect lie)
+P(liar | detect liar) = .59 (.20) / .45
+p(liar | detect liar) = .26
+
+b) What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.)
+
+P(truth teller | detect truth) = P(detect truth | told the truth) P(truth teller) / P(detect truth)
+P(truth teller | detect truth) = .90(.80) / .74
+P(truth teller | detect truth) = .97
+
+c) What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement.
+
+P(randomly selected individual is liar) = .20
+P(detect lie) = .45 (calculated above)
+P(detect lie and liar) = P(detect liar | liar) P(liar) = .59(.20) = .12
+
+P(randomly selected individual is liar) + P(detect lie) - P(detect lie AND liar) = .20 + .45 - .12 = .53
+
