@@ -1,0 +1,231 @@
+---
+title: "FZahir_Assignment07"
+author: "Farhana Zahir"
+date: "3/15/2020"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=F}
+library(tidyverse)
+library(ggplot2)
+```
+## Problem 1
+
+Let X1, X2, . . . , Xn be n mutually independent random variables, each of
+which is uniformly distributed on the integers from 1 to k. Let Y denote the
+minimum of the Xi’s. Find the distribution of Y.
+
+Solution:
+
+$k^n$ represents the total number of combinations. This will form the denominator to calculate probability.
+
+$(k-1)^n$ represents all combinations where none of the $x_i$ is equal to 1.
+
+$$P(x=1)=\frac{k^n-(k-1)^n}{k^n}$$
+$$P(x=2)=$$
+If x=3, then there are $k^n-(k-2)^n-[k^n-(k-1)^n]$ different combinations
+We can simplify this to
+$$k^n-(k-2)^n-[k^n-(k-1)^n]
+=k^n-k^n-(k-2)^n+(k-1)^n=(k-1)^n-(k-2)^n$$
+
+$$P(x=2)=\frac{(k-2+1)^n-(k-2)^n}{k^n}$$
+
+Therefore, we can generalize
+
+$$P(x=y)=\frac{(k-y+1)^n-(k-y)^n}{k^n}$$
+
+
+## Problem 2 part a
+
+Your organization owns a copier (future lawyers, etc.) or MRI (future doctors). This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.)
+
+a)What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a geometric. (Hint: the probability is equivalent to not failing during the first 8 years..)
+
+P(machine will fail) = .10
+P(machine will not fail) = .90
+
+$$P(x=n)=p*(1−p)^{n−1}$$
+Here, the success factor is the machine will fail, so p=0.10, q=0.90
+The probabilty that the machine will fail after 8 years means that the machine will not fail for each of the first 8 years. This is caulated as $q^8$ and is denoted by p below.
+I calculated the same using the R function pgeom and find out I have to use an n parameter that is less by 1. This is because as per the source code of pgeom, the formula used is
+$$p(x)=p(1-p)^n$$
+Therefore, to find the probability that the machine is working by the end of the 8th day, I need to use n parameter of 7.
+
+*https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Geometric*
+
+*https://rstudio-pubs-static.s3.amazonaws.com/327096_819b7905fc8e4cca83ad7a8bbff24723.html*
+
+```{r}
+p<-(0.9^8)
+print('the probablity using formula is')
+p
+prob<-pgeom(7, 0.1, lower.tail = F)
+print('The probablity using pgeom is')
+prob
+```
+
+Let us plot the distribution
+
+```{r}
+#still working on 8th day
+still_working <-1-pgeom(0:10,.1)
+still_working
+```
+
+Plotting the Cumulative Density Function
+
+```{r}
+n<-7
+p<-0.10
+data.frame(x = 0:10, 
+           cdf = pgeom(q = 0:10, prob = p, lower.tail = F)) %>%
+  mutate(Failures = ifelse(x <= n, n, "other")) %>%
+ggplot(aes(x = factor(x), y = cdf, fill = Failures)) +
+  geom_col() +
+  geom_text(
+    aes(label = round(cdf,2), y = cdf + 0.01),
+    position = position_dodge(0.9),
+    size = 3,
+    vjust = 0
+  ) +
+  labs(title = "Cumulative Probability of X = 8 Failures.",
+       subtitle = "Geometric Distribution",
+       x = "Failures prior to first success (x)",
+       y = "probability") 
+```
+
+Expected value 
+
+In probability theory and statistics, the geometric distribution is either of two discrete probability distributions:
+
+The probability distribution of the number X of Bernoulli trials needed to get one success, supported on the set { 1, 2, 3, ... }
+The probability distribution of the number Y = X − 1 of failures before the first success, supported on the set { 0, 1, 2, 3, ... }
+
+the following form of the geometric distribution is used for modeling the number of failures until the first success:
+
+$$P(Y=k)=(1-p)^{k}p$$
+for k = 0, 1, 2, 3, ....
+*https://en.wikipedia.org/wiki/Geometric_distribution*
+
+$$E(X)=q/p=\frac{.90}{.10}=9$$
+
+$$StDev(X)=\sqrt\frac{1-p}{p^2}=\sqrt\frac{0.9}{0.1^2}=9.49$$
+
+
+## Problem 2 part b
+
+
+
+What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as an exponential.
+
+Solution:
+
+$$E(x)=\frac{1}{\lambda}$$
+
+$$\sigma=\sqrt\frac{1}{\lambda^2}$$
+```{r}
+lambda<-0.10
+exp_value<-1/lambda
+st_dev<-sqrt(1/lambda^2)
+exp_value
+st_dev
+
+```
+
+Probability that machine will fail after eight years
+
+```{r}
+#no of trials
+lambda<-0.10
+n<-8
+p_exp<-pexp(8, lambda, lower.tail = F)
+p_exp
+#using formula
+e<-exp(1)
+p1_exp<-e^(-lambda*n)
+p1_exp
+```
+
+Plotting the distribution
+
+```{r}
+n<-8
+lambda<-0.10
+data.frame(x = 0:10, 
+           cdf = pexp(q = 0:10, rate = lambda, lower.tail = F)) %>%
+  mutate(Failures = ifelse(x <= n, n, "other")) %>%
+ggplot(aes(x = factor(x), y = cdf, fill = Failures)) +
+  geom_col() +
+  geom_text(
+    aes(label = round(cdf,2), y = cdf + 0.01),
+    position = position_dodge(0.9),
+    size = 3,
+    vjust = 0
+  ) +
+  labs(title = "Cumulative Probability of X = 8 Failures.",
+       subtitle = "Exponential Distribution",
+       x = "Failures prior to first success (x)",
+       y = "probability") 
+```
+
+
+## Problem 2 part c
+
+What is the probability that the machine will fail after 8 years? Provide also the expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8 years).
+
+Solution:
+
+$$E(x)=np$$
+
+$$\sigma=\sqrt(npq)$$
+```{r}
+exp_binom<-n*p
+stdev_binom<-sqrt(n*p*(1-p))
+exp_binom
+stdev_binom
+```
+
+Prob machine fails after 8yrs=prob machine does not fail for the first 8 yrs
+
+```{r}
+p_binom<-pbinom(0, 8, 0.1)
+p_binom
+#Using formula P(x<=n)=p^0*q^n
+p1_binom<-(p^0)*((1-p)^8)
+p1_binom
+```
+
+## Problem 2 part d
+
+What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a Poisson.
+
+Solution:
+
+$$E(x)=\lambda, \sigma=\sqrt\lambda$$
+$$\lambda=\frac{np}{t}=\frac{8*0.1}{1}=0.8$$
+```{r}
+lambda<-0.8
+exp_pois<-lambda
+stdev_pois<-sqrt(lambda)
+exp_pois
+stdev_pois
+```
+
+```{r}
+
+p_pois<-ppois(0,lambda)
+p_pois
+#Checking with the formula
+p1_pois<-exp(-0.8)
+p1_pois
+```
+
