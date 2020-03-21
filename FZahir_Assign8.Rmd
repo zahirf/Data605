@@ -1,0 +1,89 @@
+---
+title: "FZahir_Assignment08"
+author: "Farhana Zahir"
+date: "3/21/2020"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 11 Page 303
+
+A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours
+What is the expected time until the first lightbulb burns out?
+
+
+Solution
+
+$P(M \le m)=1-e^\frac{-nm}{\mu}$
+
+For this particular problem, n=100 and $\mu$=1000
+
+$E(M) = \int_{0}^{\infty}x \frac{n}{\mu}e^{-\frac{nx}{\mu}}dx = -\frac{e^{\frac{n}{\mu} x}(\frac{n}{\mu}x+1)}{\frac{n}{\mu}}|^{\infty}_{0} = \frac{\mu}{n} = 10$
+
+The expected time until the first lightbulb burns out is 10 hours.
+
+
+## Problem 14 Page 303
+
+Assume that $X$ and $Y$ are independent random variables both with exponential density given by $\lambda$
+Show that $Z = X-Y$ has density:
+
+$f_{Z}(z) = \frac{1}{2}\lambda e^{-\lambda |z|}$
+
+Solution
+
+$Z = X - Y \implies X = Z + Y$
+
+Then $f_{Z}(z) = \int_{-\infty}^{\infty}f_{X}(z+y)f_{Y}(y)dy$
+
+We know that $f_{X}(x)$ and $f_{Y}(x)$ are 0 when $x&lt;0$
+
+We also know that the range of possible values for $Z$ is $(-\infty, \infty)$
+
+If $z\leq 0$, then $(z+y)$ and $y$ must both be positive, or else $f_{X}(x)$ and $f_{Y}(x)$ are 0
+
+This implies $y &gt; -z$
+
+So $f_{Z}(z) = \int_{-z}^{\infty}f_{X}(z+y)f_{Y}(y)dy = \int_{-z}^{\infty}\lambda^{2}e^{-\lambda(z + 2y)}dy = \frac{-\lambda}{2}e^{-\lambda(z+2y)}|_{-z}^{\infty}$
+
+$= \frac{\lambda}{2}e^{\lambda z} = \frac{\lambda}{2}e^{-\lambda |z|}$
+
+
+## Problem 1 page 320
+
+Let $X$ be a continuous random variable with mean $\mu = 10$ and variance $\sigma^{2} = \frac{100}{3}$
+Using Chebyshev's inequality, find an upper bound for the following probabilities:
+
+a) $P\left ( \left |X-10 \right |\geq 2 \right )$
+
+b) $P\left ( \left |X-10 \right |\geq 5 \right )$
+
+c) $P\left ( \left |X-10 \right |\geq 9 \right )$
+
+d) $P\left ( \left |X-10 \right |\geq 20 \right )$
+
+Solution
+
+a)
+
+$P\left ( \left |X-10 \right |\geq 2 \right ) \leq \frac{\frac{100}{3}}{2^{2}} = \frac{100}{12} \implies$ the upper bound is 1
+
+b)
+
+$P\left ( \left |X-10 \right |\geq 5 \right ) \leq \frac{100}{3\cdot 5^{2}} = \frac{4}{3} \implies$ upper bound is 1
+
+c)
+
+$P\left ( \left |X-10 \right |\geq 9 \right ) \leq \frac{100}{3\cdot 9^{2}} = \frac{100}{243} \implies$ upper bound is 0.4115
+
+d)
+
+$P\left ( \left |X-10 \right |\geq 20 \right ) \leq \frac{100}{3\cdot 20^{2}} = \frac{1}{12} \implies$ upper bound is 0.08333
