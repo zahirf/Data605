@@ -1,0 +1,65 @@
+---
+title: "Discussion9"
+author: "Farhana Zahir"
+date: "3/25/2020"
+output: 
+   html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Continuous Independent Trials
+
+Prob 11 Page 363
+
+The price of one share of stock in the Pilsdorff Beer Company is given by $Y_{n}$
+Finn notices that $X_{n} = Y_{n+1} - Y_{n}$ appear to be independent random variables with $\mu = 0$ and $\sigma  =\frac{1}{2}$
+
+If $Y_{1} = 100$, estimate the probability that:
+
+a) $Y_{365}\geq100$
+
+b) $Y_{365}\geq110$
+
+c) $Y_{365}\geq120$
+
+Solutions:
+
+First of all, we calculate the expected value and variance for $Y_{365}$
+
+$E(X_{n}) = E(Y_{n+1}-Y_{n}) = E(Y_{n+1})-E(Y_{n})$
+
+$E(X_{i}) = 0 \implies E(Y_{n+1})=E(Y_{n})$
+
+$E(Y_{1}) = E(100) = 100 \implies E(Y_{365}) = 100$
+
+$V(Y_{365}) = V(Y_{364} + X_{365}) = V(Y_{364}) + V(X_{365}) = V(Y_{364}) + \sigma $
+
+$= V(Y_{363}) + 2\sigma = ... = 365\sigma = \frac{365}{4}$
+
+a)
+
+Since $E(Y_{365}) = 100 \implies P(Y_{365} \geq 100) = 0.5$
+
+b)
+
+$\frac{110 - 100}{\sqrt{\frac{365}{4}}} = 1.04685$
+
+```{r}
+pnorm(-1.04685)
+```
+
+$\implies P(Y_{365}\geq 100) = 0.1476$
+
+
+c)
+
+$\frac{120 - 100}{\sqrt{\frac{365}{4}}} = 2.0937$
+
+```{r}
+pnorm(-2.0937)
+```
+
+$\implies P(Y_{365}\geq 100) = 0.01814$
