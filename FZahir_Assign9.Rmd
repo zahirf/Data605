@@ -1,0 +1,139 @@
+---
+title: "FZahir_Assignment09"
+author: "Farhana Zahir"
+date: "3/29/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 01 
+
+Chapter 9.3 Exercise 11 page 363
+
+The price of one share of stock in the Pilsdorff Beer Company is given by $Y_{n}$
+Finn notices that $X_{n} = Y_{n+1} - Y_{n}$ appear to be independent random variables with $\mu = 0$ and $\sigma  =\frac{1}{2}$
+If $Y_{1} = 100$, estimate the probability that:
+a) $Y_{365}\geq100$
+b) $Y_{365}\geq110$
+c) $Y_{365}\geq120$
+
+Solution:
+
+Calculate the expected value and variance for $Y_{365}$
+
+$E(X_{n}) = E(Y_{n+1}-Y_{n}) = E(Y_{n+1})-E(Y_{n})$
+
+$E(X_{i}) = 0 \implies E(Y_{n+1})=E(Y_{n})$
+
+$E(Y_{1}) = E(100) = 100 \implies E(Y_{365}) = 100$
+
+$V(Y_{365}) = V(Y_{364} + X_{365}) = V(Y_{364}) + V(X_{365}) = V(Y_{364}) + \sigma$
+
+$= V(Y_{363}) + 2\sigma = ... = 365\sigma = \frac{365}{4}$
+
+a)
+Since $E(Y_{365}) = 100 \implies P(Y_{365} \geq 100) = 0.5$
+
+b)
+$\frac{110 - 100}{\sqrt{\frac{365}{4}}} = 1.04685$
+
+```{r}
+pnorm(-1.04685)
+```
+
+$\implies P(Y_{365}\geq 100) = 0.1476$
+
+c)
+$\frac{120 - 100}{\sqrt{\frac{365}{4}}} = 2.0937$
+
+```{r}
+pnorm(-2.0937)
+```
+$\implies P(Y_{365}\geq 100) = 0.01814$
+
+
+## Problem 02 
+
+Calculate the expected value and variance of the binomial distribution using the moment generating function.
+
+Solution:
+
+For binomial distribution, $P(X=k) = {n \choose k} p^k q^{n-k}$, where $q=1-p$.
+
+The moment generating function is $M_X(t)=(q+pe^t)^n$.
+
+The first moment is $M'_X(t) = n(q+pe^t)^{n-1}pe^t$.
+
+The expected value is the first moment evaluated at $t=0$:
+
+$$
+\begin{split}
+E(X)=M'_X(0) &= n(q+pe^0)^{n-1}pe^0\\
+&= n(q+p)^{n-1}p\\
+&= np(1-p+p)^{n-1}\\
+&= np1^{n-1}\\
+&=np
+\end{split}
+$$
+The second moment is $M''_X(t) = n(n-1)(q+pe^t)^{n-2}p^2 e^{2t}+n(q+pe^t)^{n-1}pe^t$.
+
+Evaluating the second moment at $t=0$:
+$$
+\begin{split}
+E(X^2)=M''_X(0) &= n(n-1)(q+pe^0)^{n-2}p^2 e^0+n(q+pe^0)^{n-1}pe^0\\
+&= n(n-1)(1-p+p)^{n-2}p^2+n(1-p+p)^{n-1}p\\
+&= n(n-1)p^2+np
+\end{split}
+$$
+The variance is $V(X)=E(X^2)-E(X)^2$:
+$$
+\begin{split}
+V(X) &= n(n-1)p^2+np-n^2p^2 \\
+&= np((n-1)p+1-np) \\
+&= np(np-p+1-np) \\
+&= np(1-p) \\
+&= npq
+\end{split}
+$$
+We get the known definitions for binomial distribution - $E(X)=np$ and $V(X)=npq$.
+
+
+## Problem 03 
+Calculate the expected value and variance of the exponential distribution using the moment generating function.
+
+Solution:
+
+For exponential distribution, $f(x)=\lambda e^{-\lambda x}$.
+
+The moment generating function is $M_X(t)=\frac{\lambda}{\lambda-t}, t<\lambda$.
+
+$M'_X(t) = \frac{\lambda}{(\lambda-t)^2}$ and $M''_X(t) = \frac{2\lambda}{(\lambda-t)^3}$.
+
+https://www.youtube.com/watch?v=ROpBZalIt3Q
+
+Expected value:
+$$
+\begin{split}
+E(X)=M'_X(0) &= \frac{\lambda}{(\lambda-0)^2} \\
+&= \frac{\lambda}{\lambda^2}\\
+&= \frac{1}{\lambda}
+\end{split}
+$$
+Variance:
+$$
+\begin{split}
+V(X) = E(X^2)-E(X)^2 &= M''_X(0)-M'_X(0)^2 \\
+&=\frac{2\lambda}{(\lambda-0)^3} - \frac{1}{\lambda^2}\\
+&=\frac{2\lambda}{\lambda^3} - \frac{1}{\lambda^2}\\
+&=\frac{2}{\lambda^2} - \frac{1}{\lambda^2}\\
+&=\frac{1}{\lambda^2}
+\end{split}
+$$
+We get the known definitions for exponential distribution - $E(X)=1/\lambda$ and $V(X)=1/\lambda^2$.
