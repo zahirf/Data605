@@ -1,0 +1,37 @@
+---
+title: "Discussion10"
+author: "Farhana Zahir"
+date: "4/01/2020"
+output: 
+   html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Markov Chains
+
+Prob 2 Page 413
+
+In Example 11.4, let $a=0$ and $b=1/2$
+Find $P$, $P^{2}$, and $P^{3}$
+What would $P^{n}$ be? What happens as $n\rightarrow \infty$?
+
+Solution:
+
+$P=\begin{pmatrix}(1-a) & a\\ b & (1-b)\end{pmatrix} = \begin{pmatrix}1 & 0\\ 1/2 & 1/2\end{pmatrix}$
+
+$\implies P^{2} = \begin{pmatrix}1 & 0\\ 1/2 & 1/2\end{pmatrix}\begin{pmatrix}1 & 0\\ 1/2 & 1/2\end{pmatrix} = \begin{pmatrix}1 & 0\\ 3/4 & 1/4\end{pmatrix}$
+
+$\implies P^{3} = \begin{pmatrix}1 & 0\\ 3/4 & 1/4\end{pmatrix}\begin{pmatrix}1 & 0\\ 1/2 & 1/2\end{pmatrix} = \begin{pmatrix}1 & 0\\ 7/8 & 1/8\end{pmatrix}$
+
+We notice the pattern...
+
+$P^{n} = \begin{pmatrix}1 & 0\\ 1-(1/2)^{n} &(1/2)^{n}\end{pmatrix}$
+
+Then...
+
+$\lim_{n\rightarrow \infty}P^{n} = \begin{pmatrix}1 & 0\\ 1 & 0\end{pmatrix}$
+
+This means that no matter the starting state, the final state will always be $s_{1}$
