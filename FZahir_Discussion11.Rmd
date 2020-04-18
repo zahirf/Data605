@@ -1,0 +1,83 @@
+---
+title: "FZahir_Discussion11"
+author: "Farhana Zahir"
+date: "4/18/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Data: Age and Cholesterol
+
+Source: https://www.kaggle.com/ronitf/heart-disease-uci
+
+## One factor Linear Regression
+
+The analysis looks at the relationship between Age and Cholesterol. The independent variable is Age and the Dependent variable is cholesterol.
+
+## Load data
+
+```{r}
+data <- read.csv(file="https://raw.githubusercontent.com/zahirf/Data605/master/heart.csv", header=TRUE, sep=",")
+head(data, 10)
+```
+
+## Rename columns
+
+```{r}
+names(data)[names(data)=="ï..age"]<-"Age"
+names(data)[names(data)=="chol"]<-"Cholesterol"
+```
+
+## Plot Age and Cholesterol
+
+The data shows a slight upward relationship between the 2 variables.
+
+```{r}
+plot(data$Age, data$Cholesterol, xlab = "Age", ylab = "Cholesterol", main="Age vs Cholesterol")
+```
+
+## Linear model
+
+Let us test the relationship further with a linear model.
+
+We can see that the Rsquare is very low at 4%, the model explains the relationships only 4% of the time.
+The p values of the coefficients are however very low so there is very low probability that the corresponding coefficients are not relevant to the model.
+
+```{r}
+fit <- lm(Cholesterol ~ Age, data = data)
+summary(fit)
+```
+
+## Plotting the linear model
+
+Intercept is 179.9675. Slope is 1.2194.
+
+Equation
+
+Cholesterol= 179.9675  + 1.2194 * Age
+
+```{r}
+plot(data$Age, data$Cholesterol, xlab = "Age", ylab = "Cholesterol", main="Age vs Cholesterol")
+abline(fit)
+```
+
+## Plot of residuals
+
+The plot below shows that the residuals are not uniformly distributed around zero. The residuals appear to be increasing in variability as we go right.The QQplot also shows residuals moving further away from the line at the two ends. The residuals are not normally distributed.
+
+```{r}
+plot(fitted(fit), resid(fit))
+qqnorm(resid(fit))
+qqline(resid(fit))
+```
+
+## Summary 
+
+The model has violated the condition of homoscedasticity for a linear model and therefore this particular model defining the relationship between Age and Cholesterol is not appropriate and should not be used.
