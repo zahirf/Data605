@@ -1,0 +1,103 @@
+---
+title: "FZahir_Assign11"
+author: "Farhana Zahir"
+date: "4/18/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Problem 
+
+Using the “cars” dataset in R, build a linear model for stopping distance as a function of speed and
+replicate the analysis of your textbook chapter 3 (visualization, quality evaluation of the model, and
+residual analysis.)
+
+## Load the data
+
+```{r}
+attach(cars)
+summary(cars)
+```
+
+## Visualize the data
+
+We can see that the stopping distance tends to increase as the speed increases.
+
+```{r}
+plot(speed, dist, xlab='Speed (mph)', ylab='Distance (ft)', 
+     main='Distance vs. Speed')
+```
+
+## Linear Regression model
+
+We create a one factor regression to model distance as a function of speed.
+
+```{r}
+lm <- lm(dist ~ speed, data=cars)
+summary(lm)
+```
+
+Y intercept= -17.5791, Slope = 3.9324
+
+The equation for the regression model is
+
+$$ \hat{dist}=−17.5791+3.9324∗speed$$
+
+## Evaluating the quality of the model
+
+Residuals:
+
+The 1q and 3q values are roughly close, but the min residual is -29.069 whereas the max residual is 43.201. The residuals seem to increasing as the value of speed increases, and are therefore not exactly normally distributed.
+
+Coefficients
+
+For a good model, we would like to see standard errors that is at least 5 to 10 times smaller than the coefficients.
+
+standard error (intercept) is roughly 3 times smaller whereas standard error(speed) is roughly 9.5 times smaller. These values suggest that the slope estimate shows little variability but the intercept estimate can vary significantly.
+
+The p-values of both the coefficiants are very small, so there is minimal probability that the corresponding coefficients are not relevant to the model.
+
+Rsquare
+
+Multiple Rsquare of 65.11% means that the model explains 65.11% of the data's variation.
+
+## Plotting the linear model
+
+```{r}
+plot(speed, dist, xlab='Speed (mph)', ylab='Distance (ft)', 
+     main='Distance vs. Speed')
+abline(lm)
+```
+
+## Residual analysis
+
+```{r}
+plot(fitted(lm), resid(lm))
+abline(a=0, b=0, col='red')
+```
+
+We see that the residuals tend to increase as we move towards the right. The residuals are not uniformly scattered above and below zero.This model will tend to overpredict as often as it underpredicts.
+
+Q-Q plot
+
+```{r}
+qqnorm(resid(lm), col='blue')
+qqline(resid(lm), col='red')
+```
+
+Even though the points in the middle are somewhat closer to the line, the points at the end diverge significantly. The distribution's tails are heavier than a normal distribution. The residuals are not normally distributed.
+
+## Conclusion
+
+We conclude that using only the speed as a predictor of stopping distance in the model is insufficient to explain the data. Therefore, we can say that there may be other factors that may be considered to accurately predict the stopping distance.
+
+
+
+
