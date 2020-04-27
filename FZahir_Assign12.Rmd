@@ -1,0 +1,182 @@
+---
+title: "FZahir_Assign12"
+author: "Farhana Zahir"
+date: "4/26/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r message=FALSE}
+library(tidyverse)
+```
+
+## Dataset
+
+The attached who.csv dataset contains real-world data from 2008. The variables included follow.
+
+Country: name of the country
+LifeExp: average life expectancy for the country in years
+InfantSurvival: proportion of those surviving to one year or more
+Under5Survival: proportion of those surviving to five years or more
+TBFree: proportion of the population without TB.
+PropMD: proportion of the population who are MDs
+PropRN: proportion of the population who are RNs
+PersExp: mean personal expenditures on healthcare in US dollars at average exchange rate
+GovtExp: mean government expenditures per capita on healthcare, US dollars at average exchange rate
+TotExp: sum of personal and government expenditures.
+
+#Data Load
+```{r}
+who = read.csv("https://raw.githubusercontent.com/zahirf/Data605/master/who.csv", stringsAsFactors = F)
+head(who)
+```
+
+## Question 01
+
+Provide a scatterplot of LifeExp~TotExp, and run simple linear regression. Do not transform the variables. Provide and interpret the F statistics, R^2, standard error,and p-values only. Discuss whether the assumptions of simple linear regression met.
+
+Solution:
+
+Simple regression model
+
+```{r}
+lm1 <- lm(LifeExp~TotExp, data=who)
+summary(lm1)
+```
+Scatterplot
+
+```{r}
+plot(who$LifeExp~who$TotExp, xlab='Average Life Expectancy', ylab='Sum of Government Expenditures', 
+     main='LifeExp vs TotExp')
+abline(lm1)
+```
+
+
+
+The linear model is a statistically significant of the evaluation score with p-value less than 0.05.
+
+he $R^2$ indicates that .2577 of variation in life expectancy is explained by the total expenditure.
+The Standard Error is smaller then the coefficient.
+The P-value is small which indicates that expenditure is a significant variable and that it is likely to impact life expectancy.
+The F-Statistic is large which indicates a strong relationship between the independent and dependent variables.
+
+Residuals
+
+```{r}
+plot(lm1)
+```
+
+The residual plot shows there is no constant variability and that the residuals are not normally distributed. This model does not fit the data well to describe the relationship between total expenditure and life expectancy.
+
+## Question 02
+
+Raise life expectancy to the 4.6 power (i.e., LifeExp^4.6). Raise total expenditures to the 0.06 power (nearly a log transform, TotExp^.06). Plot LifeExp^4.6 as a function of TotExp^.06, and r re-run the simple regression model using the transformed variables. Provide and interpret the F statistics, R^2, standard error, and p-values. Which model is “better?”
+
+Solution
+
+```{r}
+LifeExp_46 = who$LifeExp^4.6
+TotExP_06 = who$TotExp^0.06
+lm2 = lm(LifeExp_46 ~ TotExP_06, who)
+summary(lm2)
+```
+
+```{r}
+plot(LifeExp_46~TotExP_06, 
+     xlab="Total Expenditures", ylab="Life Expectancy",
+     main="Life Expectancy vs Total Expenditures (Transformed)")
+abline(lm2)
+```
+
+The second linear model is a statistically significant predictor of evaluation score with p-value less than 0.05. For Multiple R-squared and R-squared, the model is only around 73% fits the data.
+
+The $R^2$ indicates that .7298 of variation in life expectancy is explained by the total expenditure.
+The Standard Error is smaller then the coefficient.
+The P-value is small which indicates that expenditure is a significant variable and that it is likely to impact life expectancy.
+The F-Statistic is large which indicates a strong relationship between the independent and dependent variables.
+
+```{r}
+plot(lm2)
+```
+
+The residual plot shows there is constant variability and that the residuals are more normally distributed. This model fits the data well enough to describe the relationship between total expenditure and life expectancy.
+
+## Question 03
+
+Using the results from 3, forecast life expectancy when TotExp^.06 =1.5. Then forecast life expectancy when TotExp^.06=2.5.
+
+Solution
+
+TotExp^.06 =1.5
+
+```{r}
+x <-1.5
+y <- lm2$coefficients[1] + lm2$coefficients[2]* x
+life_exp <- round(y^(1/4.6), 2)
+print(life_exp)
+```
+
+For TotExp^0.06=1.5, the forecasted life expectancy is 63.31 years.
+
+TotExp^0.06=2.5
+
+```{r}
+x <-2.5
+y <- lm2$coefficients[1] + lm2$coefficients[2]* x
+life_exp <- round(y^(1/4.6), 2)
+print(life_exp)
+```
+For TotExp^0.06=2.5, the forecasted life expectancy is 86.51
+
+
+## Question 04
+
+Build the following multiple regression model and interpret the F Statistics, R^2, standard error, and p-values. How good is the model?
+
+$$LifeExp = b0+b1 * PropMd + b2 * TotExp +b3 * PropMD * TotExp$$
+
+Solution
+
+```{r}
+lm3 <- lm(LifeExp ~ PropMD+TotExp+(PropMD*TotExp), data=who)
+summary(lm3)
+```
+
+The linear model lm 3 seems to be a better model than lm1. This model is a statistically significant predictor of evaluation score. For Multiple R-squared and R-squared, the model is only around 34% to 35% fits the data.
+
+The $R^2$ indicates that .3574 of variation in life expectancy is explained by the total expenditure.
+The Standard Error is smaller then the coefficient.
+The P-value is small which indicates that expenditure is a significant variable and that it is likely to impact life expectancy.
+The F-Statistic is not large which does not indicates a strong relationship between the independent and dependent variables.
+
+```{r}
+plot(lm3)
+```
+The residual plot shows there is no constant variability and that the residuals are not normally distributed. This model does not fit the data well enough to describe the relationship between total expenditure and life expectancy.The data seems to show a quadratic relationship.
+
+## Question 05
+
+Forecast LifeExp when PropMD=.03 and TotExp = 14. Does this forecast seem realistic? Why or why not?
+
+Solution
+
+```{r}
+propmd = 0.03
+totexp = 14
+
+LifeExp<- lm3$coefficients[1] + lm3$coefficients[2] * propmd +
+    lm3$coefficients[3] * totexp + lm3$coefficients[4] * propmd * totexp
+print(LifeExp)
+```
+
+The life expectancy predicted by the model is 107.7 years, which seems unrealistic as the maximum life expectancy in the dataset is 83 years. The model seems to overpredict.
+
+```{r}
+print(max(who$LifeExp))
+```
