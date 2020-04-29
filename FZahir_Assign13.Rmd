@@ -1,0 +1,182 @@
+---
+title: "FZahir_Assign13"
+author: "Farhana Zahir"
+date: "4/29/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 01</span>
+
+Use integration by substitution to solve the integral below.
+
+$\int4e^{-7x}dx$
+
+Solution:
+
+Let \(u=-7x\) $\implies$ \(dx=-\frac{1}{7}dz\)
+
+$4\int e^z \frac{-1}{7}dz=\frac{-4}{7}\int e^zdz=-\frac{4}{7}e^z+C=-\frac{4}{7}e^{-7x}+C$
+
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 02</span>
+
+Biologists are treating a pond contaminated with bacteria. The level of contamination is changing at a rate of $\frac{dN}{dt}=-\frac{3150}{t^4}-220$ bacteria per cubic centimeter per day, where $t$ is the number of days since treatment began. Find a function $t$ to estimate the level of contamination if the level after 1 day was 6530 bacteria per cubic centimeter.
+
+Solution:
+
+$\int\frac{dN}{dt}=\int(\frac{-3150}{t^4} -220)dt=-\frac{12600}{t^3}-220t+C$
+
+Since $N(1)=6530$ this can be used to find $C$.
+
+$N(1)=6530=-\frac{12600}{t^3}-220(1)+C$
+
+$C=6290$
+
+$N(t)=-\frac{12600}{t^3}-220t+6290$
+
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 03</span>
+
+Find the total area of the red rectangles in the figure below, where the equation of the line is $f(x) = 2x+9$
+
+Solution:
+
+$\int_{4.5}^{8.5} 2x-9 dx$
+
+Using integrate function in R
+
+```{r}
+func<-function(x){2*x-9}
+int<-integrate(func, lower=4.5, upper=8.5)
+int
+```
+
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 04</span>
+
+Find the area of the region bounded by the graphs of the given equations, 
+
+$y = x2- 2x- 2$
+
+$y = x + 2$
+
+Solution:
+
+$x+2=x^2-2x-2\\ \implies x^2-3x-4=0\\ \implies(x-4)(x+1)=0\\ \implies x=4, -1$
+
+So the intersections occur at $x=-1$ and $x=4$
+
+$Area=\int_{-1}^{4} x+2 dx - \int_{-1}^{4} x^2-2x-2 dx$
+
+Using integrate function in R
+```{r}
+func<-function(x){x+2}
+int<-integrate(func, lower=-1, upper=4)
+func1<-function(x){x^2 -2*x -2}
+int1<-integrate(func1, lower=-1, upper=4)
+print(int$value-int1$value)
+```
+plot the area
+
+```{r}
+plot (func, -5, 7)
+plot (func1, -2, 5, add=TRUE)
+```
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 05</span>
+
+A beauty supply store expects to sell 110 flat irons during the next year. It costs $3.75 to store one flat iron for one year. There is a fixed cost of $8.25 for each order. Find the lot size and the number of orders per year that will minimize inventory costs.
+
+Solution:
+
+Let C be cost, n be the number of orders per year and x be the lot size.
+
+$n*x=110 \implies x=110/n$
+
+$C=8.25∗n+3.75∗x/2$
+
+Assuming  half an order is in storage at on average
+
+$C=8.25*n + 3.75*(110/n)/2$
+
+$\implies C=8.25*n + 206.25/n$
+
+$dC/dn=8.25-206.25/n^2$
+
+Setting C=0,
+
+$8.25-206.25/n^2=0$
+
+$n=\sqrt \frac{206.25}{8.25}$
+
+Therefore, number of orders is 5
+
+$x=110/5=22$
+
+Lot size is 22
+
+
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 06</span>
+
+Use integration by parts to solve the integral below.
+
+$\int ln(9x) x^6 dx$
+
+Solution:
+
+Let $u=ln(9x)$ and $v=\frac{1}{7}x^7$
+
+$du/dx=1/x \implies du=\frac{1}{x}dx$
+
+Using the formula $\int u dv=uv-\int vdu$, we get
+
+$\int ln(9x) x^6 dx = ln(9x)\frac{1}{7}x^7 -\int \frac{1}{7}x^7 \frac {1}{x} dx$
+
+$=\frac{ln(9x)x^7}{7}-\int \frac{x^7}{7x}dx$
+
+$=\frac{ln(9x)x^7}{7}-\frac{1}{7}\int x^6 dx$
+
+$=\frac{ln(9x)x^7}{7}-\frac{1}{7}(\frac{1}{7}x^7 + C)$
+
+$=\frac{ln(9x)x^7}{7}-\frac{1}{49}x^7 +C$
+
+
+## <span style="color:darkblue; font-weight:bold; font-size:18px; font-family: Calibri;">Question 07</span>
+
+Determine whether f (x) is a probability density function on the interval [1, e^6]  If not, determine the value of the definite integral.
+
+$$f(x)=\frac{1}{6x}$$
+
+Solution:
+
+The integral of a PDF must be equal to 1:
+
+$\int_{1}^{e^6} \frac{1}{6x}dx$
+
+$=\frac{1}{6} \int_{1}^{e^6} \frac{1}{x}dx$
+
+$=\frac{1}{6}ln(x)|_{1}^{e^6}$
+
+$=\frac{1}{6}(ln(e^6)-ln(1)$
+
+$=\frac{1}{6}(6-0)$
+
+$=1$
+
+f(x) is a probability density function on the interval [1,e6]
+
+
+
+`
+
