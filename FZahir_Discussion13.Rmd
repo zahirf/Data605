@@ -1,0 +1,93 @@
+---
+title: "FZahir_Discussion13"
+author: "Farhana Zahir"
+date: "4/29/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Problem 9 Ex 4.2 page 187
+
+## Problem
+
+A 24 ft ladder is leaning against a house while the base is pulled away at a constant rate of 1 ft/s. At what rate is the top of the ladder sliding down the side of the house when the base is:
+
+(a) 1 foot from the house?
+(b) 10 feet from the house?
+(c) 23 feet from the house?
+(d) 24 feet from the house?
+
+Solutions:
+
+## 1 foot from the house
+
+The ladder and house makes up a right triangle: $x^2+y^2=24^2$
+
+x= the horizontal distance the ladder is from the wall
+
+y= the vertical distance the ladder is up the wall
+
+Taking the derivative with respect to time gives us:
+
+$2x dx/dt + 2y dy/dt = 0$
+
+$\implies dy/dt = -x/y dx/dt$
+
+```{r}
+x <- 1
+y <- sqrt(24^2-x^2)
+dxdt <- 1
+dydt <- -x*dxdt/y
+dydt
+```
+
+The required rate is dy/dt = -0.0417 ft/sec
+
+## 10 feet from the house
+
+Using the derivation in (a) and plugging in the variables
+
+```{r}
+x <- 10
+y <- sqrt(24^2-x^2)
+dxdt <- 1
+dydt <- -x*dxdt/y
+dydt
+```
+
+The required rate is dy/dt = -.458 ft/sec
+
+## 23 feet from the house
+
+Using the derivation in (a) and plugging in the variables
+
+```{r}
+x <- 23
+y <- sqrt(24^2-x^2)
+dxdt <- 1
+dydt <- -x*dxdt/y
+dydt
+```
+
+The required rate is dy/dt = -3.35 ft/sec
+
+## 24 feet from the house
+
+The ladder is completely horizontal and there is no vertical height.
+
+```{r}
+x <- 24
+y <- sqrt(24^2-x^2)
+dxdt <- 1
+dydt <- -x*dxdt/y
+dydt
+```
+
+As the vertical height approaches zero, dy/dt approaches infinity.
