@@ -1,0 +1,107 @@
+---
+title: "FZahir_Assign14"
+author: "Farhana Zahir"
+date: "5/08/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(pracma)
+```
+
+This week, we'll work out some Taylor Series expansions of popular functions.
+
+## f(x)=1/1-x
+
+
+For each function, only consider its valid ranges as indicated in the notes when you are computing the Taylor Series expansion. Please submit your assignment as a R-Markdown document.
+
+
+
+\[f\left( x \right) = \frac { 1 }{ (1-x) } \]
+
+
+\(f(a) + {{ f }^{ \prime }}(a)(x-a) + \frac{{ f }^{ \prime \prime }}{2!}(x-a) + \frac {{ f }^{ \prime \prime \prime }}{3!}(x - a) + \frac {f^{(4)}}{4!}(x - a) +...\)
+
+\(= 1 + 1x + \frac{2}{2!}x^2 + \frac{6}{3!}x^3 + \frac{24}{4!}x^4 +...\)
+
+which reduces to,
+
+$1 + x + x^2 + x^3 + x^4 + ...
+
+```{r}
+c = 0
+f <- function(x) {1/(1-x)}
+a <- taylor(f,x0=c,5)
+a
+```
+
+
+Visualizing the approximation function
+```{r}
+p <- function(x) {a[6] + a[5]*(x-c) + (a[4]*(x-c)^2) + (a[3]*(x-c)^3) + (a[2]*(x-c)^4 +(a[6]*(x-c)^5))}
+plot(f, from =-0.25,to=0.75)
+par(new=TRUE)
+plot(p, from = -0.75,to=0.75,axes=FALSE ,col = 'red')
+
+```
+
+## f(x)=e^x
+
+\[f(x) = e^x\]
+
+
+\(f(a) + {{ f }^{ \prime }}(a)(x-a) + \frac{{ f }^{ \prime \prime }}{2!}(x-a) + \frac {{ f }^{ \prime \prime \prime }}{3!}(x - a) + \frac {f^{(4)}}{4!}(x - a) +...\)
+
+\(= 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \frac{x^4}{24} + ...\)
+
+
+```{r}
+c = 0
+f <- function(x) {exp(x)}
+a <- taylor(f,x0=c,5) 
+a
+```
+
+Visualizing the approximation function
+
+```{r}
+p <- function(x) {a[6] + a[5]*(x-c) + (a[4]*(x-c)^2) + (a[3]*(x-c)^3) + (a[2]*(x-c)^4 +(a[6]*(x-c)^5))}
+plot(f, from = -0.5,to=0.75)
+par(new=TRUE)
+plot(p, from = -0.75,to=0.75,axes=FALSE ,col = 'red')
+
+```
+
+## f(x)=ln(1+x)
+
+\[f(x) = ln(1 + x)\]
+
+
+\(f(a) + {{ f }^{ \prime }}(a)(x-a) + \frac{{ f }^{ \prime \prime }}{2!}(x-a) + \frac {{ f }^{ \prime \prime \prime }}{3!}(x - a) + \frac {f^{(4)}}{4!}(x - a) +...\)
+
+\(=x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} +...\)
+
+```{r}
+c = 0
+f <- function(x) {log(1+x)} 
+a <- taylor(f, x0=c, 5)
+a
+```
+
+Visualizing the approximation function
+
+```{r}
+p <- function(x) {a[6] + a[5]*(x-c) + (a[4]*(x-c)^2) + (a[3]*(x-c)^3) + (a[2]*(x-c)^4 +(a[6]*(x-c)^5))}
+plot(f, from = -0.25,to=0.75)
+par(new=TRUE)
+plot(p, from = -0.75,to=0.75,axes=FALSE ,col = 'red')
+```
