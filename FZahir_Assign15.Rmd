@@ -1,0 +1,209 @@
+---
+title: "FZahir_Assign15"
+author: "Farhana Zahir"
+date: "5/17/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r message=F, warning=F}
+library(tidyverse)
+```
+
+## Problem 01
+
+Find the equation of the regression line for the given points.
+Round any final values to the nearest hundredth, if necessary. 
+
+( 5.6, 8.8 ), ( 6.3, 12.4 ), ( 7, 14.8 ), ( 7.7, 18.2 ), ( 8.4, 20.8 )
+
+Solution:
+
+```{r}
+df <- data.frame(x=c(5.6, 6.3, 7, 7.7, 8.4), y=c(8.8, 12.4, 14.8, 18.2, 20.8))
+print (df)
+```
+Running the regression
+
+```{r}
+m1 = lm(y ~ x, data=df)
+summary(m1)
+```
+Equation of the regression line:
+
+$$y=−14.8+4.26∗x$$
+
+Plotting the regression line
+
+```{r}
+ggplot(df, aes(x, y)) + 
+  geom_point(colour="red", size=2) + 
+  geom_abline(aes(slope=round(m1$coefficients[2], 2), intercept=round(m1$coefficients[1], 2))) +
+  xlab("x values") + ylab("y values") + labs(title = "x vs. y")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Problem 02
+
+Find all local maxima, local minima, and saddle points for the function given below.
+Write your answer(s) in the form (x, y, z). Separate multiple points with a comma.
+
+$$f(x,y)=24x−6xy^2−8y^3$$
+
+Solution:
+
+$f_x(x,y)=\frac{∂}{∂x}(24x−6xy^2−8y^3)=24−6y^2$
+
+$f_y(x,y)=\frac{∂}{∂y}(24x−6xy^2−8y^3)=−12xy−24y^2$
+
+Setting $f_x(x,y)=0$,
+
+$24−6y^2=0$ 
+
+$6y^2=24$
+
+y=±2 
+
+Setting $f_y(x,y)=0$ and by substituting value of y,
+
+$−12xy−24y^2=0$
+
+$−12xy=24y^2$
+
+x=−2y
+
+When y=2, x=−4
+
+When y=−2, x=4
+
+Substituting these values in the function,
+
+f(x,y)=f(−4,2)=(24x−6xy^2−8y^3)=[24(−4)−6(−4)(22)−8(2)3]=−64 
+
+f(x,y)=f(4,−2)=(24x−6xy^2−8y^3)=[24(4)−6(4)(−22)−8(−2)3]=64
+
+The critical points are (−4,2) and (4,−2)
+
+(x,y,z) = (4,−2,64) and (−4,2,−64)
+
+Second Derivative test:
+
+Let $D=f_{xx}(x0,y0).f_{yy}(x0,y0)−f^2_{xy}(x0,y0)$
+  
+$f_{xx}(x,y)=\frac{∂}{∂x}(fx)=\frac{∂}{∂x}(24−6y^2)=0$
+
+$f_{yy}(x,y)=\frac{∂}{∂y}(fy)=\frac{∂}{∂x}(−12xy−24y^2)=−12x−48y$
+
+$f_{xy}(x,y)=\frac{∂}{∂y}(fx)=\frac{∂}{∂y}(24−6y^2)=−12y$
+
+$D(x0,y0)=f_{xx}(x0,y0).f_{yy}(x0,y0)−f^2_{xy}(x0,y0)$
+
+D(−4,2)=(0)((−12∗−4)−(48∗2))−(−12∗2)2=−576 
+
+D(4,−2)=(0)((−12∗4)−(48∗(−2)))−(−12∗(−2))2=−576
+
+D(−4,2)  and D(4,−2) are both negative, so (−4,2) and (4,−2) are the saddle points.
+
+
+## Problem 03
+
+A grocery store sells two brands of a product, the “house” brand and a “name” brand.
+The manager estimates that if she
+sells the “house” brand for x dollars and the “name” brand for y dollars, she will be able to sell 81−21x+17y units of the “house” brand and 40+11x−23y units of the “name” brand.
+
+Step 1. Find the revenue function R(x, y).
+
+Step 2.What is the revenue if she sells the “house” brand for $2.30 and the “name” brand for $4.10?
+
+Solution:
+
+If the manager sells the “house” brand for x dollars, she is able to sell 81−21x+17y
+If the manager sells the “name” brand for y dollars, she is able to sell 40+11x−23y
+
+$$Revenue(x)=x∗(81−21x+17y)=(81x−21x^2+17xy)$$
+
+$$Revenue(y)=y∗(40+11x−23y)=(40y+11xy−23y^2)$$
+
+$$R(x,y)=81x−21x^2+17xy+40y+11xy−23y^2 $$
+
+$$R(x,y)=−21x^2+28xy−23y^2+81x+40y$$
+
+Step 2:
+
+x=$2.30 
+y=$4.10
+
+R(2.30,4.10)=−21(2.30)2+28(2.30∗4.10)−23(4.10)2+81(2.30)+40(4.10)
+
+R(2.30,4.10)=$116.62
+
+The total revenue if the manager sells the “house” brand for 2.30 and “name” brand for 4.10 is $116.62.
+
+
+## Problem 04
+
+A company has a plant in Los Angeles and a plant in Denver.
+The firm is committed to produce a total of 96 units of a product each week. The total weekly cost is given by 
+
+$$C(x,y)=16x^2+16y^2+7x+25y+700,$$ 
+where x is the number of units produced in Los Angeles and y is the number of units produced in Denver. How many units should be produced in each plant to minimize the total weekly cost?
+
+
+Solution:
+
+Since the company is committed to produce a total of 96 units of a product each week, 
+
+x+y=96
+
+x=96−y
+
+$C(96−y,y)=16(96−y)^2+16y^2+7(96−y)+25y+700 $
+
+$C(96−y,y)=16(y^2−192y+9216)+16y^2+18y+1372$
+
+$C(96−y,y)=13y^2−14y+2908$
+
+To find the minimum value, we need to differentiate the function C(x,y) and equate it to 0.
+
+$C′(96−y,y)=\frac{d}{dy}(13y^2−14y+2908)=23y−14$
+
+23y−14=0
+
+y=21
+
+using value of y,
+
+x= 96-21 = 75
+
+The company needs to produce 75 units in Los Angeles plant and 21 units in Denver plant to minimize the total weekly cost.
+
+
+## Problem 05
+
+Evaluate the double integral on the given region
+
+Solution:
+
+$$A=∫42∫42e(8x+3y)dA$$
+
+$$A=\int_2^4 \int_2^4e^{8x}e^{3y}dxdy$$
+
+$$A=\int_2^4e^{8x}dx∗\int_2^4e^{3y}dy$$
+
+$$A=\frac{1}{8}e^{8x}\Big|_3^4∗\frac{1}{3}e^{3y}\Big|_2^4$$
+
+$$A=\frac{1}{24}(e^{32}−e^{16})(e^{12}−e^{6})$$
+
+calculate using R
+
+```{r}
+1/24*((exp(32)+exp(16))*(exp(12) - exp(6)))
+```
