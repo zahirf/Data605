@@ -1,0 +1,560 @@
+---
+title: "FZahir_Final"
+author: "Farhana Zahir"
+date: "5/15/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=F, message=F, warning=F}
+library(knitr)
+library(kableExtra)
+library(ggpubr)
+library(tidyverse)
+library(zoo)
+library(corrplot)
+library(psych)
+library(scales)
+library(matrixcalc)
+library(MASS)
+library(Rmisc)
+```
+
+## Problem 1 
+
+### Random Variables 
+
+*Using R, generate a random variable X that has 10,000 random uniform numbers from 1 to N, where N can be any number of your choosing greater than or equal to 6.  Then generate a random variable Y that has 10,000 random normal numbers with a mean of\(\mu=\sigma=\frac{N+1}{2}\).*  
+
+```{r}
+# generating random numbers
+set.seed(4242)
+n <- 7
+X <- runif(10000, 1, n) 
+Y <- rnorm(10000, (n+1)/2, (n+1)/2)
+df <- data.frame(cbind(X, Y))
+#check total
+total <- nrow(df)
+head(df, 10)
+```
+
+### Probability 
+
+*Calculate as a minimum the below probabilities a through c.  Assume the small letter "x" is estimated as the median of the X variable, and the small letter "y" is estimated as the 1st quartile of the Y variable.  Interpret the meaning of all probabilities.*
+
+a) P(X>x | X>y)
+
+```{r}
+#Storing x and y
+x = quantile(df$X, 0.5)
+x
+y = quantile(df$Y, 0.25)
+y
+```
+
+We are asked to calculate the probability that X> 3.929 given that X>1.245
+
+We know that 
+
+$$P(A|B)=\frac{P(A \cap B)}{P(B)}$$
+
+Using the above formula
+
+```{r}
+# P(X>y)
+pX_greatery <- nrow(subset(df, X > y))/total
+
+# P(X>x & X>y)
+pXgreaterx_and_greatery <- nrow(subset(df, X > x & Y > y))/total
+
+p1 <- round(pXgreaterx_and_greatery / pX_greatery, 4)
+print(paste0("P(X>x | Y>y) = ", p1))
+```
+
+b) P(X>x,Y>y)
+
+```{r}
+# P(X>x & Y>y)
+pXgreaterx_pYgreatery <- nrow(subset(df, X > x & Y > y))/total
+
+print(paste0("P(X>x, Y>y) = ", pXgreaterx_pYgreatery ))
+```
+
+c) P(X<x|X>y)
+
+```{r}
+# P(X<x & X>y)
+pxgreaterx_pxgreatery <- nrow(subset(df, X < x & X > y))/total
+
+# P(X<x | X>y)
+prob2 <- round(pxgreaterx_pxgreatery  / pX_greatery, 4)
+print(paste0("P(X<x | X>y) = ", prob2))
+
+```
+
+### Marginal and Joint Probability 
+
+*Investigate whether P(X>x and Y>y)=P(X>x)P(Y>y) by building a table and evaluating the marginal and joint probabilities.*
+
+```{r}
+# marginal probablity of P(X>x)
+pXgreaterx <- nrow(subset(df, X > x))/total
+
+# marginal probablity of P(Y>y)
+pYgreatery <- nrow(subset(df, Y > y))/total
+
+# joint probability of P(X>x & Y>y)
+pXgreatergx_Ygreatery <- nrow(subset(df, X > x & Y > y))/total
+
+# product of marginal probabilities
+prod_marginal <- pXgreaterx*pYgreatery
+
+#Test if P(X>x and Y>y)=P(X>x)P(Y>y)
+round(pXgreatergx_Ygreatery,2)==round(prod_marginal,2)
+
+```
+
+
+We found that P(X>x and Y>y)=P(X>x)P(Y>y)
+
+Next we build the table
+
+```{r}
+kable(cbind(pXgreaterx, pYgreatery, prod_marginal,  pXgreatergx_Ygreatery), col.names = c("P(X>x)", "P(Y>y)", "P(X>x)P(Y>y)", "P(X>x & Y>y)")) %>%
+   kable_styling(position = "center", "striped")
+```
+
+### Independence
+
+*Check to see if independence holds by using Fisher’s Exact Test and the Chi Square Test.  What is the difference between the two? Which is most appropriate?*
+
+Creating the count table
+
+```{r}
+greaterx <- nrow(subset(df, X > x))
+greatery <- nrow(subset(df, Y > y))
+lessx <- nrow(subset(df, X <= x))
+lessy <- nrow(subset(df, Y <= y))
+  
+table <- matrix(c(greaterx,greatery, lessx, lessy), 2, 2,
+                dimnames = list(c("x", "y"),
+                                c("X>xorY>y", "X<=xorY<= y")))
+table
+```
+
+Running Fisher test
+
+Ho: X and Y are independent of each other
+
+Ha: X and Y are not independent of each other
+
+```{r}
+fisher.test(table)
+```
+
+Running Chi-squared test
+
+```{r}
+chisq.test(table)
+```
+
+The p value is less than 0.05 for both tests, so we may reject the null hypothesis. X and Y are not independent of each other.
+
+Fisher's exact test works well with sample sizes, whereas Chi-squared test is more appropriate for large sample sizes. Here we have a sample size of 10,000 so Chi-squared is more appropriate.
+
+
+
+## Problem 2 
+
+*You are to register for Kaggle.com (free) and compete in the House Prices: Advanced Regression Techniques competition.  https://www.kaggle.com/c/house-prices-advanced-regression-techniques .I want you to do the following.*
+
+
+### Choosing the variables
+
+*Provide univariate descriptive statistics and appropriate plots for the training data set.  Provide a scatterplot matrix for at least two of the independent variables and the dependent variable. Derive a correlation matrix for any three quantitative variables in the dataset.  Test the hypotheses that the correlations between each pairwise set of variables is 0 and provide an 80% confidence interval.  Discuss the meaning of your analysis.  Would you be worried about familywise error? Why or why not?*
+
+```{r}
+#read the data
+train<-read.csv("https://raw.githubusercontent.com/zahirf/Data605/master/train.csv")
+```
+
+There are 1460 observations of 81 variables. I am choosing the Sale Price as Dependent variable.
+
+I am running a pairs test for all variables, keeping the SalePrice in each test. The following code shows the results for the first 10 variables. I have run the test for all 80 variables.
+
+```{r message=F, warning=F}
+train %>% 
+  dplyr::select(2:11, 81) %>%
+  pairs.panels(method = "pearson", hist.col = "#f44542")
+```
+
+The train dataset is then modified to keep all variables with absolute correlation value of more than 0.50
+
+```{r}
+train<-train%>%
+  dplyr::select(c('SalePrice','Alley', 'OverallQual', 'YearBuilt', 'YearRemodAdd',
+                'BsmtQual', 'ExterQual', 'TotalBsmtSF', 'FullBath', 'GrLivArea', 'X1stFlrSF',
+                'KitchenQual', 'TotRmsAbvGrd', 'GarageFinish', 'GarageCars', 'GarageArea'))
+```
+
+Now we have 15 independent variables that are more correlated with SalePrice. Let us run the pairs test again, dividing the dataset in 2
+
+```{r message=F, warning=F}
+train %>% 
+  dplyr::select(2:9, 1) %>%
+  pairs.panels(method = "pearson", hist.col = "#f44542")
+
+train %>% 
+  dplyr::select(10:16, 1) %>%
+  pairs.panels(method = "pearson", hist.col = "#f44542")
+
+```
+
+### Descriptive and Inferential statistics 
+
+#### Descriptive statistics
+
+```{r}
+summary(train)
+```
+
+
+
+Independent variable: SalePrice
+
+```{r}
+ggplot(train, aes(x=SalePrice))+
+  geom_histogram(bins=30,color="darkblue", fill="lightblue")+
+  geom_vline(aes(xintercept=mean(SalePrice)),color="blue", linetype="dashed", size=1)+
+  theme_classic()+
+  ggtitle('Histogram: SalePrice')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_x_continuous(labels=comma)
+```
+
+Dependent variables: OverallQual (Correlation 0.79), GrLivArea (Correlation 0.71)
+
+```{r}
+ggplot(train, aes(x=OverallQual))+
+  geom_histogram(binwidth=1, color="darkblue", fill="lightblue")+
+  theme_classic()+
+  ggtitle('Histogram: Overall Quality')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_vline(aes(xintercept=mean(OverallQual)),color="blue", linetype="dashed", size=1)
+
+```
+
+```{r}
+ggplot(train, aes(x=GrLivArea))+
+  geom_histogram(bins=30, color="darkblue", fill="lightblue")+
+  theme_classic()+
+  ggtitle('Histogram: Above Ground Living Area')+
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_vline(aes(xintercept=mean(GrLivArea)),color="blue", linetype="dashed", size=1)
+```
+
+
+SalePrice vs Overall Quality
+
+```{r warning=F}
+
+ggplot(train, aes(x = OverallQual, y = SalePrice)) + 
+  geom_point(aes(color = factor(OverallQual)))+
+  theme_classic() +
+  ggtitle ('SalePrice vs OverallQual')+
+  scale_y_continuous(labels=comma)+
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_smooth(method = lm, se = FALSE)
+```
+
+SalePrice vs GrLivArea
+
+```{r warning=F, message=F}
+ggplot(train, aes(x = GrLivArea, y = SalePrice)) + 
+  geom_point(color='grey') + 
+  ggtitle ('SalePrice vs GrLivArea')+
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_y_continuous(labels=comma)+
+   geom_smooth(method = lm, se = FALSE, color='red')
+```
+
+Both the variables seem to be positively related to SalePrice. 
+
+
+
+#### Scatterplot matrix
+
+Independent variable: SalePrice
+
+Dependent variables: 
+
+OverallQual (Correlation 0.79), 
+GrLivArea (Correlation 0.71),
+ExterQual (Correlation -0.64),
+GarageCars( Correlation 0.64)
+                     
+```{r warning=F}
+train %>% 
+  dplyr::select(c('SalePrice', 'OverallQual','GrLivArea', 'BsmtQual', 'GarageCars')) %>% 
+  pairs.panels(method = "pearson", hist.col = "#5D6D7E")
+
+```
+
+#### Correlation matrix
+
+*Derive a correlation matrix for any three quantitative variables in the dataset.*
+
+```{r warning=F}
+corrmat = train %>% 
+  dplyr::select(SalePrice, OverallQual, GrLivArea) %>% 
+  cor() %>% 
+  as.matrix()
+corrmat
+```
+
+#### Test Hypothesis
+
+*Test the hypotheses that the correlations between each pairwise set of variables is 0 and provide an 80% confidence interval. Discuss the meaning of your analysis. Would you be worried about familywise error? Why or why not?*
+
+SalePrice vs OverallQual
+
+```{r}
+pair1<-cor.test(train$SalePrice, train$OverallQual, conf.level = 0.8)
+pair1
+```
+
+The correlation value (.79) indicates there is correlation between Overall Quality and Sale Price. The p-value is less than the significance level 0.05. It can be concluded that the variables are significantly correlated.
+
+```{r}
+pair2<-cor.test(train$SalePrice, train$GrLivArea, conf.level = 0.8)
+pair2
+```
+
+The correlation value (.71) indicates there is correlation between Overall Quality and Sale Price. The p-value is less than the significance level 0.05. It can be concluded that the variables are significantly correlated.
+
+
+Family-wise error rate is the probability of making one or more false discoveries, or type I errors when performing multiple hypotheses tests. I would not be worried in this case becausein both cases the alternative hypothesis was affirmed and the p-values were extremely small.
+
+
+
+### Linear Algebra and Correlation
+
+*Invert your correlation matrix from above. (This is known as the precision matrix and contains variance inflation factors on the diagonal.) Multiply the correlation matrix by the precision matrix, and then multiply the precision matrix by the correlation matrix. Conduct LU decomposition on the matrix.*  
+
+Precision matrix
+
+```{r}
+precisionmatrix <-solve(corrmat)
+precisionmatrix
+```
+
+Correlation times precision
+
+```{r}
+multiple <- round(corrmat %*% precisionmatrix)
+multiple
+```
+
+Precision times correlation
+
+```{r}
+multiple2<- round(precisionmatrix %*% corrmat)
+multiple2
+```
+
+LU Decomposition
+
+```{r}
+#conduct LU decomposition on the matrix
+lu <- lu.decomposition(corrmat)
+lu
+
+# test to show the product of LU is the original matrix
+lu$L%*%lu$U
+#The two matrices multiplied give us the correlation matrix as below
+corrmat
+```
+
+
+### Calculus-Based Probability & Statistics
+
+*Many times, it makes sense to fit a closed form distribution to data. Select a variable in the Kaggle.com training dataset that is skewed to the right, shift it so that the minimum value is absolutely above zero if necessary.*
+
+I have selected the GrLivArea variable. The minimum value is 334 which is above zero as required.
+
+```{r}
+min(train$GrLivArea)
+```
+
+The distribution of the variable is shown below
+
+```{r warning=F, message=F}
+ggplot(train, aes(GrLivArea)) +
+  geom_histogram(aes(y = ..density..), colour="black", fill="#5D6D7E") +
+  geom_density(alpha=.5, fill="#85929E") +
+  geom_vline(xintercept = min(train$GrLivArea)) +
+  labs(title = "GrLivArea") +
+  theme_classic()
+```
+
+*Then load the MASS package and run fitdistr to fit an exponential probability density function.). Find the optimal value of λ for this distribution*
+
+```{r}
+# fit exponential distribution
+fit_dist <- fitdistr(train$GrLivArea, "exponential")
+rate <- fit_dist$estimate
+rate
+```
+
+The optimal value of λ for this distribution is 0.000659864
+
+*Then take 1000 samples from this exponential distribution using this value (e.g., rexp(1000, λ)).  Plot a histogram and compare it with a histogram of your original variable.*   
+
+```{r}
+#Get values for exponential distribution
+set.seed(450)
+opval <-rexp(1000, rate)
+opval<-data.frame(opval)
+```
+
+```{r}
+#Plot the histograms
+ep<-ggplot(opval, aes(opval)) +  
+  geom_histogram(bins=50, colour="black", fill="#5D6D7E") +
+  theme_classic()+
+  labs(x = "Exponential Distribution") 
+od<-ggplot(train, aes(GrLivArea)) +  
+  geom_histogram(bins=50, colour="black", fill="#5D6D7E") +
+  theme_classic()+
+  labs(x = "Original Distribution") 
+ggarrange(ep, od, nrow = 1, ncol = 2)
+```
+
+*Using the exponential pdf, find the 5th and 95th percentiles using the cumulative distribution function (CDF).   Also generate a 95% confidence interval from the empirical data, assuming normality.  Finally, provide the empirical 5th percentile and 95th percentile of the data.  Discuss.*
+
+```{r}
+# the 5th and 95th percentiles of exponential pdf
+qexp(0.05, rate = rate)
+qexp(0.95, rate = rate)
+```
+
+```{r}
+#95% confidence interval from empirical, assuming normailit
+CI<-CI(na.exclude(train$GrLivArea), ci = 0.95)
+CI
+```
+
+```{r}
+# the 5th and 95th percentiles of empirical data
+quantile(train$GrLivArea, c(0.05, 0.95))
+```
+
+The 5th and 95th percentile values of the exponential distribution are 77.73 and 4539.92.
+
+The 95% confidence interval for the empirical data have lower limit of 1488 and upper limit of 1542.
+
+The empirical distribution have 5th and 95th percentile values of 848 and 2466, which differ highly from the values derived from the exponential distribution. 
+
+From the visualization we see that the exponential distribution shows a much higher positive skew than the empirical distribution. This implies that the exponential distribution is not a good fit for this particular variable in this dataset.
+
+### Modeling
+
+*Build some type of multiple regression  model and submit your model to the competition board.  Provide your complete model summary and results with analysis.  Report your Kaggle.com user name and score.*
+
+We have seen in the Descriptive statistics that some of the variables have a few major outliers. We attempt to remove those outliers first
+```{r}
+##removing outliers
+train<-train%>%
+ filter(GrLivArea<=4000)%>%
+ filter(SalePrice<=500000)%>%
+ filter(TotalBsmtSF<=2250)
+```
+
+Converting to data matrix so we may test the categorical variables
+```{r}
+temp<-data.matrix(train)
+temp<-data.frame(temp)
+```
+
+After several attemps using a mix of variables with an absolute correlation of over 0.60 with SalePrice, I came up with the following model which gives the highest Rsquare for the combinations run
+
+```{r}
+fit = lm(log(temp$SalePrice) ~ temp$OverallQual + log(temp$GrLivArea) + temp$GarageCars +temp$TotalBsmtSF, data = temp)
+summary(fit)
+```
+
+The model has an Adjusted RSquare of 0.82. All of the Coefficient estimates have a very low p value and are all significant. The standard errors are all at least 5 to 10 times smaller than the coefficients.
+
+
+Checking the residuals
+
+Constant variability
+
+Most of the residuals seem to be evenly distributed around 0, but a significant number seem to be below -0.5. 
+
+```{r}
+plot(fitted(fit), resid(fit))
+abline(a=0, b=0, col='red')
+```
+
+Nearly Normal Residuals
+
+The Q-Q plot displays signs of skewness towards the left. The assumption of nearly normal residuals do not seem to have been met.
+
+```{r}
+qqnorm(resid(fit))
+qqline(resid(fit))
+```
+
+Independence
+
+The independent variables show some positive correlation with each other.
+
+```{r}
+data <- dplyr::select( train, GrLivArea, OverallQual, TotalBsmtSF, GarageCars) 
+m<-cor(data)
+corrplot.mixed(m, lower.col = "black", number.cex = .7)
+```
+
+Testing the data with test.csv and writing the submission for Kaggle
+
+```{r}
+#Loading test data and converting to data frame
+test<-read.csv("test.csv")
+temp1<-data.matrix(test)
+temp1<-data.frame(temp1)
+
+#Mutate logsale[rice and sale price
+temp1$logSalePrice = (fit$coefficients[2] * temp1$OverallQual) + (fit$coefficients[3] * log(temp1$GrLivArea)) + (fit$coefficients[4] * temp1$GarageCars) +(fit$coefficients[5]*temp1$TotalBsmtSF) + fit$coefficients[1]
+temp1$SalePrice<-exp(temp1$logSalePrice)
+
+#make file ready for submission
+submission = cbind(temp1$Id, temp1$SalePrice)
+colnames(submission) = c("Id", "SalePrice")
+submission<-na.locf(submission)
+submission = as.data.frame(submission)
+head(submission, 5)
+```
+
+```{r eval=F}
+#write file for submission
+write.csv(submission, file = "experiment1.csv", quote = FALSE, row.names = FALSE)
+```
+
+Kaggle Score
+
+User: https://www.kaggle.com/zahirf
+
+Score: 0.17296
+
+```{r warning=F,message=FALSE, out.width='90%', fig.show='hold'}
+knitr::include_graphics('Score.png')
+```
